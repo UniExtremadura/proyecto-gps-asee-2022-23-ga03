@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_horario">
+
+    <fragment
+        android:id="@+id/navigation_horario"
+        android:name="es.unex.giiis.asee.proyecto.ui.horario.HorarioManagerFragment"
+        android:label="@string/title_horario"
+        tools:layout="@layout/fragment_horario_manager" />
+
+    <fragment
+        android:id="@+id/navigation_ejercicios"
+        android:name="es.unex.giiis.asee.proyecto.ui.ejercicios.EjerciciosFragment"
+        android:label="@string/title_ejercicios"
+        tools:layout="@layout/fragment_ejercicios" />
+
+    <fragment
+        android:id="@+id/navigation_recetas"
+        android:name="es.unex.giiis.asee.proyecto.ui.recetas.RecetasFragment"
+        android:label="@string/title_recetas"
+        tools:layout="@layout/fragment_recetas" />
+
+    <fragment
+        android:id="@+id/navigation_perfil"
+        android:name="es.unex.giiis.asee.proyecto.ui.perfil.PerfilFragment"
+        android:label="@string/title_perfil"
+        tools:layout="@layout/fragment_perfil" />
+</navigation>

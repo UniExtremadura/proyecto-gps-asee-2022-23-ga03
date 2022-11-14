@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Nutrifit</string>
+    <string name="title_horario">Horario</string>
+    <string name="title_ejercicios">Ejercicios</string>
+    <string name="title_recetas">Recetas</string>
+    <string name="title_perfil">Perfil</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

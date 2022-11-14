@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_horario"
+        android:icon="@drawable/ic_horario_black_48dp"
+        android:title="@string/title_horario" />
+
+    <item
+        android:id="@+id/navigation_ejercicios"
+        android:icon="@drawable/ic_ejercicios_black_48dp"
+        android:title="@string/title_ejercicios" />
+
+    <item
+        android:id="@+id/navigation_recetas"
+        android:icon="@drawable/ic_recetas_black_48dp"
+        android:title="@string/title_recetas" />
+
+    <item
+        android:id="@+id/navigation_perfil"
+        android:icon="@drawable/ic_perfil_black_48dp"
+        android:title="@string/title_perfil" />
+
+</menu>
