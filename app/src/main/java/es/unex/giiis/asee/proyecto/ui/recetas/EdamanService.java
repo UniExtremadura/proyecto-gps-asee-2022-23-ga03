@@ -1,0 +1,16 @@
+package es.unex.giiis.asee.proyecto.ui.recetas;
+
+import es.unex.giiis.asee.proyecto.recipesmodel.RecipesApiResponse;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Query;
+
+public interface EdamanService {
+
+    @GET("recipes/v2")
+    Call<RecipesApiResponse> listRecipes(@Query("type") String type,
+                                         @Query("q") String query,
+                                         @Query("app_id") String app_id,
+                                         @Query("app_key") String app_key,
+                                         @Query("random") String random);
+}
