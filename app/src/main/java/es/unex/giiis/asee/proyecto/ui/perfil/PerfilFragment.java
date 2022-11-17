@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.databinding.FragmentPerfilBinding;
@@ -51,6 +53,12 @@ public class PerfilFragment extends Fragment {
         height = binding.heightView;
 
         sp = getActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
+
+        FragmentManager fm = getChildFragmentManager();
+        WeightGraphFragment weightGraphFragment = new WeightGraphFragment();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.add(R.id.fragmentContainerView2, weightGraphFragment);
+        fragmentTransaction.commit();
 
         new AsyncLoad().execute();
 
