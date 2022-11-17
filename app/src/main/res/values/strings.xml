@@ -60,4 +60,5 @@
     <string name="weight_format">Enter a valid weight value.</string>
     <string name="height_format">Enter a valid height value.</string>
     <string name="title_activity_favorite">FavoriteActivity</string>
+    <string name="edit_profile">Edit profile</string>
 </resources>
