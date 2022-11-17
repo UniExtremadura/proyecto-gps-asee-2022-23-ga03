@@ -3,4 +3,7 @@
     <item
         android:id="@+id/editProfile"
         android:title="@string/edit_profile" />
+    <item
+        android:id="@+id/editWeight"
+        android:title="Edit weight" />
 </menu>
