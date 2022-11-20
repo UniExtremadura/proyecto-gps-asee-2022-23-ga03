@@ -34,6 +34,7 @@ public class PerfilFragment extends Fragment {
     private UserItem user;
     private SharedPreferences sp;
     private TextView name, completename, email, age, weight, height;
+    private static final int EDIT_WEIGHT_REQUEST = 1;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -88,6 +89,14 @@ public class PerfilFragment extends Fragment {
                         user.getWeight(), user.getHeight(), user.getPassword());
                 startActivityForResult(intent, EDIT_PROFILE_REQUEST);
                 break;
+            case R.id.editWeight:
+                Intent intent2 = new Intent(getContext(), EditWeightActivity.class);
+                UserItem.packageIntent(intent2, user.getId(), user.getUsername(),
+                        user.getCompletename(), user.getEmail(), user.getAge(),
+                        user.getWeight(), user.getHeight(), user.getPassword());
+                intent2.putExtra("Data", user.getWeight());
+                startActivityForResult(intent2, EDIT_WEIGHT_REQUEST);
+                break;
         }
         return true;
     }
@@ -110,6 +119,13 @@ public class PerfilFragment extends Fragment {
                 editor.putString("password", user.getPassword());
                 editor.apply();
 
+                fillInformation();
+            }
+        }
+        else if (requestCode == EDIT_WEIGHT_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                UserItem updatedUser = new UserItem(data);
+                user = updatedUser;
                 fillInformation();
             }
         }
