@@ -26,6 +26,20 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".ui.horario.AddPlantillaActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ui.perfil.EditWeightActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.perfil.EditProfileActivity"
             android:exported="false">
             <meta-data
