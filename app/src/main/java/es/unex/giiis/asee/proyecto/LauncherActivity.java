@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import es.unex.giiis.asee.proyecto.login_register.LoginActivity;
+
 public class LauncherActivity extends AppCompatActivity {
     private final int SPLASH_DISPLAY_LENGTH = 3500;
 
@@ -17,7 +19,7 @@ public class LauncherActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent intent = new Intent(LauncherActivity.this, MainActivity.class);
+                Intent intent = new Intent(LauncherActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             }
