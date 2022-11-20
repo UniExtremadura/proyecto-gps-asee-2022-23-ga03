@@ -22,6 +22,7 @@ import android.widget.Button;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.Serializable;
 import java.util.List;
 
 import es.unex.giiis.asee.proyecto.R;
@@ -57,6 +58,12 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
         mAdapter = new PlantillaAdapter(this, new PlantillaAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(PlantillaItem item) {
+                Intent intent = new Intent(getContext(), DetallesPlantillaSwipeActivity.class);
+                List<PlantillaItem> data = mAdapter.getList();
+                intent.putExtra("data", (Serializable) data);
+                PlantillaItem.packageIntent(intent, item.getId(), item.getTitle(),
+                        item.getPriority(), item.getDay(), item.getUserid());
+                startActivity(intent);
 
             }
         });
