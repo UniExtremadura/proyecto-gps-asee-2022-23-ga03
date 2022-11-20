@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.proyecto.ui.recetas;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +15,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -82,7 +85,16 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
 
     @Override
     public void onListInteraction(Recipe recipe) {
+        Intent intent = new Intent(getActivity(), DetallesRecetaSwipeActivity.class);
 
+        Gson gson = new Gson();
+        String myJson = gson.toJson(recipe);
+
+        intent.putExtra("Recipe", myJson);
+        List<Recipe> data = mAdapter.getDataset();
+        intent.putExtra("Data", (Serializable) data);
+
+        startActivity(intent);
     }
 
     @Override
