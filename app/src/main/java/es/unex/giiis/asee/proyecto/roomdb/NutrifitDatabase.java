@@ -6,7 +6,14 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {GestionModel.class}, version = 2)
+import es.unex.giiis.asee.proyecto.login_register.UserItem;
+import es.unex.giiis.asee.proyecto.login_register.WeightRecordItem;
+
+/**
+ * Define la Base de Datos de la aplicación
+ */
+
+@Database(entities = {UserItem.class, WeightRecordItem.class}, version = 2)
 public abstract class NutrifitDatabase extends RoomDatabase {
     private static NutrifitDatabase instance;
 
@@ -17,4 +24,7 @@ public abstract class NutrifitDatabase extends RoomDatabase {
                     .build();
         return instance;
     }
+
+    public abstract UserItemDao userItemDao ();
+    public abstract WeightRecordItemDao weightRecordItemDao ();
 }
