@@ -10,11 +10,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -28,7 +26,7 @@ import es.unex.giiis.asee.proyecto.ui.recetas.DetallesRecetaActivity;
 import es.unex.giiis.asee.proyecto.ui.recetas.OnSingleRecipeLoaderListener;
 import es.unex.giiis.asee.proyecto.ui.recetas.SingleRecipeNetworkLoaderRunnable;
 
-public class DetallesHorarioActivity extends AppCompatActivity implements DetallesHorarioAdapter.OnDeleteClickListener{
+public class DetallesHorarioActivity extends AppCompatActivity implements DetallesHorarioAdapter.OnDeleteClickListener, DetallesHorarioAdapter.OnModifyClickListener {
 
     private static final String TAG = "Detalles_Horario_Activity";
     private static final int MODIFY_EVENT_ITEM_REQUEST = 1;
@@ -58,10 +56,10 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
         mLayoutManager = new LinearLayoutManager(DetallesHorarioActivity.this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new DetallesHorarioAdapter(this, new DetallesHorarioAdapter.OnItemClickListener() {
+        mAdapter = new DetallesHorarioAdapter(this, this, new DetallesHorarioAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(CalendarDayItem item) {
-                if(item.getType().equals("Recipe")) {
+                if (item.getType().equals("Recipe")) {
                     AppExecutors.getInstance().networkIO().execute(new SingleRecipeNetworkLoaderRunnable(item.getWebid(), new OnSingleRecipeLoaderListener() {
                         @Override
                         public void onRecipeLoader(Recipe data) {
@@ -108,6 +106,26 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
         dialog.show();
     }
 
+    @Override
+    public void onModifyClick(CalendarDayItem item) {
+        Intent intent = new Intent(DetallesHorarioActivity.this, AddEventToHorarioActivity.class);
+        CalendarDayItem.packageIntent(intent, item.getId(), item.getTitle(), item.getWebid(),
+                item.getStatus(), item.getDate(), item.getTime(), item.getUserid(), item.getType());
+        intent.putExtra("Mode", "Update");
+        startActivityForResult(intent, MODIFY_EVENT_ITEM_REQUEST);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == MODIFY_EVENT_ITEM_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                CalendarDayItem item = new CalendarDayItem(data);
+                new AsyncUpdate().execute(item);
+            }
+        }
+    }
+
     private void log(String msg) {
         try {
             Thread.sleep(500);
@@ -120,7 +138,7 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
     class AsyncLoad extends AsyncTask<Void, Void, List<CalendarDayItem>> {
 
         @Override
-        protected List<CalendarDayItem> doInBackground(Void... voids){
+        protected List<CalendarDayItem> doInBackground(Void... voids) {
             NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(DetallesHorarioActivity.this);
             List<CalendarDayItem> items = nutrifitDb.calendarDayItemDao().getAllFromDate(date);
 
@@ -128,9 +146,25 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
         }
 
         @Override
-        protected void onPostExecute(List<CalendarDayItem> items){
+        protected void onPostExecute(List<CalendarDayItem> items) {
             super.onPostExecute(items);
             mAdapter.load(items);
+        }
+    }
+
+    class AsyncUpdate extends AsyncTask<CalendarDayItem, Void, CalendarDayItem> {
+        @Override
+        protected CalendarDayItem doInBackground(CalendarDayItem... items) {
+            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(DetallesHorarioActivity.this);
+            int respuesta = nutrifitDb.calendarDayItemDao().update(items[0]);
+
+            return items[0];
+        }
+
+        @Override
+        protected void onPostExecute(CalendarDayItem item) {
+            super.onPostExecute(item);
+            new AsyncLoad().execute();
         }
     }
 
