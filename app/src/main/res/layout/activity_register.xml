@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".login_register.RegisterActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/welcome_"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            android:text="@string/welcome"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toTopOf="@+id/relativeLayout12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sign_up_to_be_able_to_use_the_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center"
+            android:layout_marginBottom="32dp"
+            android:gravity="center"
+            android:text="@string/sign_up_to_be_able_to_use_the_app"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/relativeLayout12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/welcome_" />
+
+        <Button
+            android:id="@+id/sign_up"
+            android:layout_width="153dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center"
+            android:background="?attr/colorPrimary"
+            android:gravity="center"
+            android:text="@string/sign_up"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout12" />
+
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <RelativeLayout
+                android:id="@+id/input_username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/username_register"
+                    android:layout_width="331dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/username"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/username_register_editTex"
+                    android:layout_width="313dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:hint="@string/username"
+                    android:textSize="16sp"
+                    android:maxLength = "15"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/input_complete_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp">
+
+                <TextView
+                    android:id="@+id/complete_name_text_register"
+                    android:layout_width="331dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/complete_name"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/complete_name_editText_register"
+                    android:layout_width="313dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:hint="@string/complete_name"
+                    android:textSize="16sp"
+                    android:maxLength = "30"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/input_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="160dp">
+
+                <TextView
+                    android:id="@+id/age_text_register"
+                    android:layout_width="331dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/age"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/age_editText_register"
+                    android:layout_width="313dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:hint="@string/age"
+                    android:inputType="number"
+                    android:textSize="16sp" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/input_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="240dp">
+
+                <TextView
+                    android:id="@+id/email_text_register"
+                    android:layout_width="331dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/email"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/email_editText_register"
+                    android:layout_width="313dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:hint="@string/email"
+                    android:textSize="16sp" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/input_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="320dp">
+
+                <TextView
+                    android:id="@+id/weight_register"
+                    android:layout_width="331dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/weight"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/weight_editTex"
+                    android:layout_width="313dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:inputType="numberDecimal"
+                    android:textSize="16sp" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/input_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="400dp">
+
+                <TextView
+                    android:id="@+id/height_register"
+                    android:layout_width="331dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/height"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/height_editTex"
+                    android:layout_width="313dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:inputType="numberDecimal"
+                    android:textSize="16sp" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/input_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="480dp">
+
+                <TextView
+                    android:id="@+id/password_text_register"
+                    android:layout_width="331dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/password"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:passwordToggleEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/password_editText_register"
+                        android:layout_width="313dp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/password"
+                        android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/input_repeat_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="570dp">
+
+                <TextView
+                    android:id="@+id/repeat_password_text_register"
+                    android:layout_width="331dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/repeat_password"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    app:passwordToggleEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/repeat_password_editText_register"
+                        android:layout_width="313dp"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/repeat_password"
+                        android:inputType="textPassword"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/gif"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/gif"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <pl.droidsonroids.gif.GifImageView
+                android:layout_width="240dp"
+                android:layout_height="206dp"
+                android:src="@drawable/gif"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
