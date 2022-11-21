@@ -4,12 +4,12 @@ plugins {
 
 android {
     namespace 'es.unex.giiis.asee.proyecto'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "es.unex.giiis.asee.proyecto"
-        minSdk 24
-        targetSdk 32
+        minSdk 26
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -52,4 +52,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.7'
     implementation 'com.jjoe64:graphview:4.2.2'
+    implementation 'com.applandeo:material-calendar-view:1.9.0-rc03'
 }
