@@ -1,8 +1,10 @@
 package es.unex.giiis.asee.proyecto.ui.recetas;
 
+import es.unex.giiis.asee.proyecto.recipesmodel.Hit;
 import es.unex.giiis.asee.proyecto.recipesmodel.RecipesApiResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface EdamanService {
@@ -13,4 +15,11 @@ public interface EdamanService {
                                          @Query("app_id") String app_id,
                                          @Query("app_key") String app_key,
                                          @Query("random") String random);
+
+
+    @GET("recipes/v2/{id}")
+    Call<Hit> getRecipe(@Path("id") String id,
+                        @Query("type") String type,
+                        @Query("app_id") String app_id,
+                        @Query("app_key") String app_key);
 }
