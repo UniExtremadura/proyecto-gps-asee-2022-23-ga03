@@ -15,6 +15,13 @@
         android:theme="@style/Theme.Proyecto.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".ui.horario.ModifyPlantillaActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.horario.DetallesPlantillaSwipeActivity"
             android:exported="false">
             <meta-data

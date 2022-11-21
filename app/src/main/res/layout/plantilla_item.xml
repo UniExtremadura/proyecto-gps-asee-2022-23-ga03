@@ -86,6 +86,19 @@
                 card_view:layout_constraintBottom_toBottomOf="parent"
                 card_view:layout_constraintStart_toStartOf="parent" />
 
+            <ImageButton
+                android:id="@+id/modifyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="132dp"
+                android:layout_marginEnd="80dp"
+                android:background="@null"
+                android:contentDescription="Modify plantilla"
+                android:minWidth="48dp"
+                android:minHeight="48dp"
+                card_view:layout_constraintEnd_toEndOf="parent"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:srcCompat="@drawable/ic_edit_48dp" />
 
             <ImageButton
                 android:id="@+id/deleteButton"
