@@ -33,21 +33,24 @@ import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
 import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
 import es.unex.giiis.asee.proyecto.ui.horario.AddEventToHorarioActivity;
+import es.unex.giiis.asee.proyecto.ui.horario.AddRecipeToDietaActivity;
 import es.unex.giiis.asee.proyecto.ui.horario.CalendarDayItem;
+import es.unex.giiis.asee.proyecto.ui.horario.RecipePlantillaItem;
 
 public class DetallesRecetaFragment extends Fragment {
 
     private SharedPreferences sp;
-    private TextView mRecipeName,mCaloriasRacion, mRaciones, mMealType, mCuisineType, mDishType, mTime, mWeight,
+    private TextView mRecipeName, mCaloriasRacion, mRaciones, mMealType, mCuisineType, mDishType, mTime, mWeight,
             mIngredientLines, mDietLabels, mHealthLabels, mDietLines;
     private ImageView mImageView;
     private Recipe recipe;
     private Button bEnlace;
     private DecimalFormat df = new DecimalFormat("0.00");
     private Toolbar mToolbar;
-    private ImageButton bHorario;
+    private ImageButton bHorario, bDieta;
     private String webid;
     private static final int ADD_TO_CALENDAR = 1;
+    private static final int ADD_TO_DIET = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,8 +65,8 @@ public class DetallesRecetaFragment extends Fragment {
         webid = url.substring(url.lastIndexOf("_") + 1);
 
         mToolbar = v.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Recipe details");
+        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Recipe details");
         setHasOptionsMenu(true);
 
         sp = getActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
@@ -82,12 +85,13 @@ public class DetallesRecetaFragment extends Fragment {
             startActivity(webIntent);
         });
 
-        bHorario.setOnClickListener (v1 -> agregarAHorario ());
+        bHorario.setOnClickListener(v1 -> agregarAHorario());
+        bDieta.setOnClickListener(v12 -> agregarADieta());
 
         return v;
     }
 
-    public void agregarAHorario(){
+    public void agregarAHorario() {
         String date = String.valueOf(LocalDate.now());
         Date time = new Date();
         Intent intent = new Intent(getContext(), AddEventToHorarioActivity.class);
@@ -95,6 +99,13 @@ public class DetallesRecetaFragment extends Fragment {
                 date, time, sp.getLong("id", 0), "Recipe");
         intent.putExtra("Mode", "Insert");
         startActivityForResult(intent, ADD_TO_CALENDAR);
+    }
+
+    public void agregarADieta() {
+        Intent intent = new Intent(getContext(), AddRecipeToDietaActivity.class);
+        RecipePlantillaItem.packageIntent(intent, recipe.getLabel(),
+                recipe.getCalories() / recipe.getYield(), webid, recipe.getImage(), RecipePlantillaItem.Period.LUNCH, 0);
+        startActivityForResult(intent, ADD_TO_DIET);
     }
 
     private void bindViews(View v) {
@@ -112,7 +123,8 @@ public class DetallesRecetaFragment extends Fragment {
         mHealthLabels = v.findViewById(R.id.t_healthLabels);
         mDietLines = v.findViewById(R.id.t_dietLines);
         bEnlace = v.findViewById(R.id.b_enlace);
-        bHorario = v.findViewById (R.id.horarioButton);
+        bHorario = v.findViewById(R.id.horarioButton);
+        bDieta = v.findViewById(R.id.dietaButton);
     }
 
     @Override
@@ -120,6 +132,13 @@ public class DetallesRecetaFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         Toast toast;
         if (requestCode == ADD_TO_CALENDAR) {
+            if (resultCode == RESULT_OK) {
+                toast = Toast.makeText(getContext(), "Recipe added to diet", Toast.LENGTH_LONG);
+            } else {
+                toast = Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_LONG);
+            }
+            toast.show();
+        } else if (requestCode == ADD_TO_DIET) {
             if (resultCode == RESULT_OK) {
                 toast = Toast.makeText(getContext(), "Recipe added to diet", Toast.LENGTH_LONG);
             } else {

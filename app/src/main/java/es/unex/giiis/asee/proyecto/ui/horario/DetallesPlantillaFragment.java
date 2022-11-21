@@ -25,6 +25,9 @@ import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
 import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
+import es.unex.giiis.asee.proyecto.ui.recetas.DetallesRecetaActivity;
+import es.unex.giiis.asee.proyecto.ui.recetas.OnSingleRecipeLoaderListener;
+import es.unex.giiis.asee.proyecto.ui.recetas.SingleRecipeNetworkLoaderRunnable;
 
 public class DetallesPlantillaFragment extends Fragment {
 
@@ -34,6 +37,10 @@ public class DetallesPlantillaFragment extends Fragment {
 
     private PlantillaItem data;
     private TextView dietNameView, priorityView, dayView;
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private DetallesPlantillaAdapter mAdapter;
 
     private long previousId = -1;
 
@@ -54,10 +61,58 @@ public class DetallesPlantillaFragment extends Fragment {
         priorityView.setText(String.valueOf(data.getPriority()));
         dayView.setText(String.valueOf(data.getDay()));
 
+        mRecyclerView = v.findViewById(R.id.recyclerView);
+        mLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mAdapter = new DetallesPlantillaAdapter(new DetallesPlantillaAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(RecipePlantillaItem item) {
+                AppExecutors.getInstance().networkIO().execute(new SingleRecipeNetworkLoaderRunnable(item.getWebid(), new OnSingleRecipeLoaderListener() {
+                    @Override
+                    public void onRecipeLoader(Recipe data) {
+                        Intent intent = new Intent(getContext(), DetallesRecetaActivity.class);
+
+                        Gson gson = new Gson();
+                        String myJson = gson.toJson(data);
+
+                        intent.putExtra("Recipe", myJson);
+                        startActivity(intent);
+                    }
+                }));
+            }
+        });
+
+        mRecyclerView.setAdapter(mAdapter);
+        loadItems();
+
 
         return v;
     }
 
+    private void loadItems() {
+        //Se cargan los items almacenados en la base de datos
+        new AsyncLoad().execute();
+    }
+
+
+    class AsyncLoad extends AsyncTask<Void, Void, List<RecipePlantillaItem>> {
+
+        @Override
+        protected List<RecipePlantillaItem> doInBackground(Void... voids) {
+            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
+            List<RecipePlantillaItem> items = nutrifitDb.recipePlantillaItemDao().getAllFromPlantilla(data.getId());
+
+            return items;
+        }
+
+        @Override
+        protected void onPostExecute(List<RecipePlantillaItem> items) {
+            super.onPostExecute(items);
+            log(items.toString());
+            mAdapter.load(items);
+        }
+    }
 
     private void log(String msg) {
         try {
