@@ -37,6 +37,7 @@ import es.unex.giiis.asee.proyecto.ui.horario.CalendarDayItem;
 
 public class DetallesRecetaFragment extends Fragment {
 
+    private List<FavoriteRecipeItem> favoritesList;
     private SharedPreferences sp;
     private TextView mRecipeName,mCaloriasRacion, mRaciones, mMealType, mCuisineType, mDishType, mTime, mWeight,
             mIngredientLines, mDietLabels, mHealthLabels, mDietLines;
@@ -45,8 +46,10 @@ public class DetallesRecetaFragment extends Fragment {
     private Button bEnlace;
     private DecimalFormat df = new DecimalFormat("0.00");
     private Toolbar mToolbar;
-    private ImageButton bHorario;
+    private ImageButton bHorario, bFavorite;
     private String webid;
+    private boolean favoriteState = false;
+    private boolean executing = false;
     private static final int ADD_TO_CALENDAR = 1;
 
     @Override
@@ -67,6 +70,7 @@ public class DetallesRecetaFragment extends Fragment {
         setHasOptionsMenu(true);
 
         sp = getActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
+        new AsyncLoad().execute();
 
         bindViews(v);
         DetallesRecetaPresenter detallesRecetaPresenter = new DetallesRecetaPresenter(mRecipeName, mCaloriasRacion, mRaciones,
@@ -83,6 +87,7 @@ public class DetallesRecetaFragment extends Fragment {
         });
 
         bHorario.setOnClickListener (v1 -> agregarAHorario ());
+        bFavorite.setOnClickListener(v13 -> cambiarFavorito());
 
         return v;
     }
@@ -113,6 +118,37 @@ public class DetallesRecetaFragment extends Fragment {
         mDietLines = v.findViewById(R.id.t_dietLines);
         bEnlace = v.findViewById(R.id.b_enlace);
         bHorario = v.findViewById (R.id.horarioButton);
+        bFavorite = v.findViewById(R.id.favoriteButton);
+    }
+
+    public void cambiarFavorito(){
+        Log.d("Estado", String.valueOf(favoriteState));
+        if(!executing) {
+            executing = true;
+            if(favoriteState) {
+                eliminarFavorito();
+                favoriteState = false;
+            } else {
+                agregarFavorito();
+                favoriteState = true;
+            }
+        }
+    }
+
+    private void eliminarFavorito(){
+        new AsyncDelete().execute(webid);
+        Toast toast = Toast.makeText(getContext(), "Recipe deleted from favorites", Toast.LENGTH_LONG);
+        toast.show();
+    }
+
+    private void agregarFavorito(){
+        long userid = sp.getLong("id", 0);
+        FavoriteRecipeItem item = new FavoriteRecipeItem(recipe.getLabel(),
+                recipe.getCalories()/recipe.getYield(),
+                webid, recipe.getImage(),userid);
+        new AsyncInsert().execute(item);
+        Toast toast = Toast.makeText(getContext(), "Recipe added to favorites", Toast.LENGTH_LONG);
+        toast.show();
     }
 
     @Override
@@ -126,6 +162,69 @@ public class DetallesRecetaFragment extends Fragment {
                 toast = Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_LONG);
             }
             toast.show();
+        }
+    }
+
+    class AsyncLoad extends AsyncTask<Void, Void, List<FavoriteRecipeItem>> {
+
+        @Override
+        protected List<FavoriteRecipeItem> doInBackground(Void... voids){
+            long userid = sp.getLong("id", 0);
+            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
+            List<FavoriteRecipeItem> items = nutrifitDb.favoriteRecipeItemDao().getAll(userid);
+
+            return items;
+        }
+
+        @Override
+        protected void onPostExecute(List<FavoriteRecipeItem> items){
+            super.onPostExecute(items);
+            Log.d("Lista de favoritos", items.toString());
+            favoritesList = items;
+            if(favoritesList != null) {
+                for(FavoriteRecipeItem item : favoritesList) {
+                    if(item.getWebid().equals(webid)) {
+                        favoriteState = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    class AsyncInsert extends AsyncTask<FavoriteRecipeItem, Void, FavoriteRecipeItem> {
+
+        @Override
+        protected FavoriteRecipeItem doInBackground(FavoriteRecipeItem... items){
+            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
+            Long id = nutrifitDb.favoriteRecipeItemDao().insert(items[0]);
+
+            items[0].setId(id);
+
+            return items[0];
+        }
+
+        @Override
+        protected void onPostExecute(FavoriteRecipeItem items){
+            super.onPostExecute(items);
+            executing = false;
+        }
+    }
+
+    class AsyncDelete extends AsyncTask<String, Void, Integer> {
+
+        @Override
+        protected Integer doInBackground(String... items){
+            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
+            int rows = nutrifitDb.favoriteRecipeItemDao().delete(items[0]);
+
+            return rows;
+        }
+
+        @Override
+        protected void onPostExecute(Integer rows){
+            super.onPostExecute(rows);
+            executing = false;
         }
     }
 }
