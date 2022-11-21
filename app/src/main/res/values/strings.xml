@@ -61,4 +61,10 @@
     <string name="height_format">Enter a valid height value.</string>
     <string name="title_activity_favorite">FavoriteActivity</string>
     <string name="edit_profile">Edit profile</string>
+    <string name="name">Name</string>
+    <string name="type">Type:</string>
+    <string name="muscle">Muscle:</string>
+    <string name="equipment">Equipment:</string>
+    <string name="difficulty">Difficulty:</string>
+    <string name="instructions">Instructions</string>
 </resources>

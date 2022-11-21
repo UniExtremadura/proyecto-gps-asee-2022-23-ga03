@@ -46,7 +46,7 @@ public class ExcerciseListAdapter extends RecyclerView.Adapter<ExcerciseListAdap
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(final ExcercisesViewHolder holder, int position) {
-
+        holder.mItem = mDataset.get(position);
         holder.mNameView.setText(mDataset.get(position).getName());
         holder.mTypeView.setText(String.format("Type: %s", mDataset.get(position).getType()));
         holder.mMuscleView.setText(String.format("Muscle: %s", mDataset.get(position).getMuscle()));
