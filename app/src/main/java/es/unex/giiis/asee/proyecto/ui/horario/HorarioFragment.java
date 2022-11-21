@@ -77,7 +77,9 @@ public class HorarioFragment extends Fragment {
     }
 
     private void previewNote(EventDay eventDay) {
-
+        Intent intent = new Intent(getContext(), DetallesHorarioActivity.class);
+        intent.putExtra("Date", sdf.format(eventDay.getCalendar().getTime()));
+        startActivity(intent);
     }
 
     private void log(String msg) {
