@@ -9,6 +9,15 @@ import java.io.Serializable;
 
 public class Excercise implements Serializable {
 
+    public Excercise (String name, String type, String muscle, String equipment, String difficulty, String instructions) {
+        this.name = name;
+        this.type= type;
+        this.muscle= muscle;
+        this.equipment = equipment;
+        this.difficulty = difficulty;
+        this.instructions = instructions;
+    }
+
 
     @SerializedName("name")
     @Expose

@@ -15,6 +15,27 @@
         android:theme="@style/Theme.Proyecto.NoActionBar"
         tools:targetApi="31">
         <activity
+            android:name=".ui.ejercicios.DetallesEjercicioActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ui.ejercicios.FavoriteExcerciseActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ui.recetas.FavoriteRecipeActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.horario.AddEventToHorarioActivity"
             android:exported="false">
             <meta-data

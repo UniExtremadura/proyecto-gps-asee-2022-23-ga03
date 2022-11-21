@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +34,7 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
     private RecipesListAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private Toolbar mToolbar;
+    private ImageButton favoriteButton;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
 
         recyclerView = (RecyclerView) binding.recipelist;
 
+        favoriteButton = binding.favoriteButtonList;
+
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
@@ -59,6 +63,11 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
         }
 
         recyclerView.setAdapter(mAdapter);
+
+        favoriteButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), FavoriteRecipeActivity.class);
+            startActivity(intent);
+        });
 
         return root;
     }
