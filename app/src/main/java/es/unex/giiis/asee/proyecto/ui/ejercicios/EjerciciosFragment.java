@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.proyecto.ui.ejercicios;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,12 +15,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.databinding.FragmentEjerciciosBinding;
 import es.unex.giiis.asee.proyecto.exercisesModel.Excercise;
+import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
+import es.unex.giiis.asee.proyecto.ui.recetas.DetallesRecetaSwipeActivity;
 
 public class EjerciciosFragment extends Fragment implements ExcerciseListAdapter.OnListInteractionListener {
 
@@ -53,9 +59,12 @@ public class EjerciciosFragment extends Fragment implements ExcerciseListAdapter
 
     @Override
     public void onListInteraction(Excercise excercise) {
+        Intent intent = new Intent(getActivity(), DetallesEjercicioSwipeActivity.class);
+        intent.putExtra("Name", excercise.getName());
+        List<Excercise> data = mAdapter.getDataset();
+        intent.putExtra("Data", (Serializable) data);
 
-
-
+        startActivity(intent);
     }
 
 
