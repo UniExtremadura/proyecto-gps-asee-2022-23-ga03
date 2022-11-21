@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.google.gson.Gson;
 
@@ -26,6 +27,7 @@ import es.unex.giiis.asee.proyecto.databinding.FragmentEjerciciosBinding;
 import es.unex.giiis.asee.proyecto.exercisesModel.Excercise;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
 import es.unex.giiis.asee.proyecto.ui.recetas.DetallesRecetaSwipeActivity;
+import es.unex.giiis.asee.proyecto.ui.recetas.FavoriteRecipeActivity;
 
 public class EjerciciosFragment extends Fragment implements ExcerciseListAdapter.OnListInteractionListener {
 
@@ -34,6 +36,7 @@ public class EjerciciosFragment extends Fragment implements ExcerciseListAdapter
     private RecyclerView recyclerView;
     private ExcerciseListAdapter mAdapter;
     private RecyclerView.LayoutManager layoutManager;
+    private ImageButton favoriteButton;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -42,6 +45,8 @@ public class EjerciciosFragment extends Fragment implements ExcerciseListAdapter
         View root = binding.getRoot();
 
         mToolbar = binding.toolbar;
+        favoriteButton = binding.favoriteButtonList;
+
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Excercises");
         setHasOptionsMenu(true);
@@ -53,6 +58,11 @@ public class EjerciciosFragment extends Fragment implements ExcerciseListAdapter
         AppExecutors.getInstance().networkIO().
                 execute(new ExercisesNetworkLoaderRunnable(excersisesList -> mAdapter.swap(excersisesList)));
         recyclerView.setAdapter(mAdapter);
+
+        favoriteButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), FavoriteExcerciseActivity.class);
+            startActivity(intent);
+        });
 
         return root;
     }
