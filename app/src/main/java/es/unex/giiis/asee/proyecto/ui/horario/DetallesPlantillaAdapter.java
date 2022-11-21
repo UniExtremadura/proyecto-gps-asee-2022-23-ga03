@@ -24,12 +24,17 @@ public class DetallesPlantillaAdapter extends RecyclerView.Adapter<DetallesPlant
         void onItemClick(RecipePlantillaItem item);     //Type of the element to be returned
     }
 
+    public interface OnDeleteClickListener {
+        void onDeleteClick(RecipePlantillaItem item);     //Type of the element to be returned
+    }
 
     private final OnItemClickListener listener;
+    private final OnDeleteClickListener deleteListener;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public DetallesPlantillaAdapter(OnItemClickListener listener) {
+    public DetallesPlantillaAdapter(OnDeleteClickListener deleteListener, OnItemClickListener listener) {
         this.listener = listener;
+        this.deleteListener = deleteListener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -47,7 +52,7 @@ public class DetallesPlantillaAdapter extends RecyclerView.Adapter<DetallesPlant
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bind(mItems.get(position), listener);
+        holder.bind(mItems.get(position), listener, deleteListener);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -119,7 +124,7 @@ public class DetallesPlantillaAdapter extends RecyclerView.Adapter<DetallesPlant
             deleteButton = itemView.findViewById(R.id.deleteButton);
         }
 
-        public void bind(final RecipePlantillaItem item, final OnItemClickListener listener) {
+        public void bind(final RecipePlantillaItem item, final OnItemClickListener listener, final OnDeleteClickListener deleteListener) {
 
             // - Display Title in TextView
             mLabelView.setText(item.getTitle());
@@ -130,6 +135,7 @@ public class DetallesPlantillaAdapter extends RecyclerView.Adapter<DetallesPlant
             itemView.setOnClickListener(v -> listener.onItemClick(item));
 
             AppExecutors.getInstance().networkIO().execute(new NetworkImageLoaderRunnable(item.getImageurl(), mImageView::setImageDrawable));
+            deleteButton.setOnClickListener(view -> deleteListener.onDeleteClick(item));
         }
     }
 }
