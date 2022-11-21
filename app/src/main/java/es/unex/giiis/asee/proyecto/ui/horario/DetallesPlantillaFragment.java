@@ -29,7 +29,7 @@ import es.unex.giiis.asee.proyecto.ui.recetas.DetallesRecetaActivity;
 import es.unex.giiis.asee.proyecto.ui.recetas.OnSingleRecipeLoaderListener;
 import es.unex.giiis.asee.proyecto.ui.recetas.SingleRecipeNetworkLoaderRunnable;
 
-public class DetallesPlantillaFragment extends Fragment {
+public class DetallesPlantillaFragment extends Fragment implements DetallesPlantillaAdapter.OnDeleteClickListener{
 
     private static final int UPDATE_RECETA_ITEM_REQUEST = 0;
 
@@ -65,7 +65,7 @@ public class DetallesPlantillaFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new DetallesPlantillaAdapter(new DetallesPlantillaAdapter.OnItemClickListener() {
+        mAdapter = new DetallesPlantillaAdapter(this, new DetallesPlantillaAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(RecipePlantillaItem item) {
                 AppExecutors.getInstance().networkIO().execute(new SingleRecipeNetworkLoaderRunnable(item.getWebid(), new OnSingleRecipeLoaderListener() {
@@ -123,4 +123,48 @@ public class DetallesPlantillaFragment extends Fragment {
         Log.i(TAG, msg);
     }
 
+    @Override
+    public void onDeleteClick(RecipePlantillaItem item) {
+        showDeleteDialog(item);
+    }
+
+    private void showDeleteDialog(RecipePlantillaItem item) {
+        final Dialog dialog = new Dialog(getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.delete_plantilla);
+
+        final TextView text = dialog.findViewById(R.id.textView);
+        text.setText("Are you sure you want to delete this recipe from the diet?");
+
+        final Button cancelButton = dialog.findViewById(R.id.noButton);
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        final Button submitButton = dialog.findViewById(R.id.yesButton);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AsyncDelete().execute(item);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    class AsyncDelete extends AsyncTask<RecipePlantillaItem, Void, RecipePlantillaItem> {
+        @Override
+        protected RecipePlantillaItem doInBackground(RecipePlantillaItem... items) {
+            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
+            int respuesta = nutrifitDb.recipePlantillaItemDao().delete(items[0]);
+
+            return items[0];
+        }
+
+        @Override
+        protected void onPostExecute(RecipePlantillaItem item) {
+            super.onPostExecute(item);
+            mAdapter.delete(item);
+        }
+    }
 }
