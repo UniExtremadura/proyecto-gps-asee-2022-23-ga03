@@ -17,6 +17,10 @@ import es.unex.giiis.asee.proyecto.R;
 public class PlantillaAdapter extends RecyclerView.Adapter<PlantillaAdapter.ViewHolder> {
     private List<PlantillaItem> mItems = new ArrayList<>();
 
+    public interface OnModifyClickListener {
+        void onModifyClick(PlantillaItem item);     //Type of the element to be returned
+    }
+
     public interface OnItemClickListener {
         void onItemClick(PlantillaItem item);     //Type of the element to be returned
     }
@@ -27,11 +31,13 @@ public class PlantillaAdapter extends RecyclerView.Adapter<PlantillaAdapter.View
 
     private final OnItemClickListener listener;
     private final OnDeleteClickListener deleteListener;
+    private final OnModifyClickListener modifyListener;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public PlantillaAdapter(OnDeleteClickListener deleteListener, OnItemClickListener listener) {
+    public PlantillaAdapter(OnDeleteClickListener deleteListener, OnItemClickListener listener, OnModifyClickListener modifyListener) {
         this.listener = listener;
         this.deleteListener = deleteListener;
+        this.modifyListener = modifyListener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -49,7 +55,7 @@ public class PlantillaAdapter extends RecyclerView.Adapter<PlantillaAdapter.View
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bind(mItems.get(position), deleteListener, listener);
+        holder.bind(mItems.get(position), deleteListener, listener, modifyListener);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -122,6 +128,7 @@ public class PlantillaAdapter extends RecyclerView.Adapter<PlantillaAdapter.View
         private final TextView priorityView;
         private final TextView dayView;
         private final ImageButton deleteButton;
+        private final ImageButton modifyButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -131,9 +138,10 @@ public class PlantillaAdapter extends RecyclerView.Adapter<PlantillaAdapter.View
             priorityView = itemView.findViewById(R.id.dayText);
             dayView = itemView.findViewById(R.id.priorityText);
             deleteButton = itemView.findViewById(R.id.deleteButton);
+            modifyButton = itemView.findViewById(R.id.modifyButton);
         }
 
-        public void bind(final PlantillaItem plantillaItem, final OnDeleteClickListener deleteListener, final OnItemClickListener listener) {
+        public void bind(final PlantillaItem plantillaItem, final OnDeleteClickListener deleteListener, final OnItemClickListener listener, final OnModifyClickListener modifyListener) {
 
             // - Display Title in TextView
             title.setText(plantillaItem.getTitle());
@@ -147,6 +155,8 @@ public class PlantillaAdapter extends RecyclerView.Adapter<PlantillaAdapter.View
             deleteButton.setOnClickListener(view -> deleteListener.onDeleteClick(plantillaItem));
 
             itemView.setOnClickListener(v -> listener.onItemClick(plantillaItem));
+
+            modifyButton.setOnClickListener(view -> modifyListener.onModifyClick(plantillaItem));
         }
     }
 

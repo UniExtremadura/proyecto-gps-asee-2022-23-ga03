@@ -29,7 +29,7 @@ import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
 
 
-public class DietasFragment extends Fragment implements PlantillaAdapter.OnDeleteClickListener {
+public class DietasFragment extends Fragment implements PlantillaAdapter.OnDeleteClickListener, PlantillaAdapter.OnModifyClickListener {
 
     private static final int ADD_PLANTILLA_ITEM_REQUEST = 0;
 
@@ -40,6 +40,7 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
     private RecyclerView.LayoutManager mLayoutManager;
     private PlantillaAdapter mAdapter;
     private SharedPreferences sp;
+    private static final int MODIFY_PLANTILLA_ITEM_REQUEST = 1;
 
 
     @Override
@@ -66,7 +67,7 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
                 startActivity(intent);
 
             }
-        });
+        }, this);
 
         FloatingActionButton mButton = v.findViewById(R.id.fab);
         mButton.setOnClickListener(new View.OnClickListener() {
@@ -120,8 +121,22 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
                 new AsyncInsert().execute(item);
             }
         }
+        else if (requestCode == MODIFY_PLANTILLA_ITEM_REQUEST) {
+            if (resultCode == RESULT_OK){
+                PlantillaItem item = new PlantillaItem(data);
+
+                //Se actualiza el item recibido en la base de datos
+                new AsyncUpdate().execute(item);
+            }
+        }
     }
 
+    @Override
+    public void onModifyClick(PlantillaItem item) {
+        Intent intent = new Intent(getContext(), ModifyPlantillaActivity.class);
+        PlantillaItem.packageIntent(intent, item.getId(), item.getTitle(), item.getPriority(), item.getDay(), sp.getLong("id", 0));
+        startActivityForResult(intent,MODIFY_PLANTILLA_ITEM_REQUEST);
+    }
 
     @Override
     public void onDeleteClick(PlantillaItem item) {
@@ -199,6 +214,22 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
         protected void onPostExecute(PlantillaItem item) {
             super.onPostExecute(item);
             mAdapter.delete(item);
+        }
+    }
+
+    class AsyncUpdate extends AsyncTask<PlantillaItem, Void, PlantillaItem>{
+        @Override
+        protected PlantillaItem doInBackground(PlantillaItem... items){
+            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
+            int respuesta = nutrifitDb.plantillaItemDao().update(items[0]);
+
+            return items[0];
+        }
+
+        @Override
+        protected void onPostExecute(PlantillaItem item){
+            super.onPostExecute(item);
+            mAdapter.update(item);
         }
     }
 }
