@@ -37,8 +37,8 @@ public class HorarioManagerFragment extends Fragment {
         setHasOptionsMenu(true);
 
         TabLayout tabLayout = binding.tabLayout;
-        tabLayout.addTab(tabLayout.newTab().setText("Horario"),0,true);
-        tabLayout.addTab(tabLayout.newTab().setText("Dietas"),1,false);
+        tabLayout.addTab(tabLayout.newTab().setText("Calendar"),0,true);
+        tabLayout.addTab(tabLayout.newTab().setText("Diets"),1,false);
 
         FragmentManager fm = getChildFragmentManager();
         HorarioFragment horarioFragment = new HorarioFragment();
