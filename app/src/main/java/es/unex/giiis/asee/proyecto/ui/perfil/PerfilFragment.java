@@ -89,6 +89,10 @@ public class PerfilFragment extends Fragment {
                         user.getWeight(), user.getHeight(), user.getPassword());
                 startActivityForResult(intent, EDIT_PROFILE_REQUEST);
                 break;
+            case R.id.settings:
+                Intent intent3 = new Intent(getContext(), SettingsActivity.class);
+                startActivity(intent3);
+                break;
             case R.id.editWeight:
                 Intent intent2 = new Intent(getContext(), EditWeightActivity.class);
                 UserItem.packageIntent(intent2, user.getId(), user.getUsername(),

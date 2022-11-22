@@ -6,4 +6,7 @@
     <item
         android:id="@+id/editWeight"
         android:title="Edit weight" />
+    <item
+        android:id="@+id/settings"
+        android:title="Settings" />
 </menu>
