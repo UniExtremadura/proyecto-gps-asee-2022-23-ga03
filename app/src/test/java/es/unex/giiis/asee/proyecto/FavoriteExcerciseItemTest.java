@@ -93,96 +93,96 @@ public class FavoriteExcerciseItemTest {
     }
 
     @Test
-    public void getId() {
+    public void getIdTest() {
         assertEquals(1, item.getId());
     }
 
     @Test
-    public void setId() {
+    public void setIdTest() {
         assertEquals(1, item.getId());
         item.setId(2);
         assertEquals(2, item.getId());
     }
 
     @Test
-    public void getTittle() {
+    public void getTittleTest() {
         assertEquals("press de banca", item.getTittle());
     }
 
     @Test
-    public void setTittle() {
+    public void setTittleTest() {
         assertEquals("press de banca", item.getTittle());
         item.setTittle("banca de press");
         assertEquals("banca de press", item.getTittle());
     }
 
     @Test
-    public void getType() {
+    public void getTypeTest() {
         assertEquals("resistencia", item.getType());
     }
 
     @Test
-    public void setType() {
+    public void setTypeTest() {
         assertEquals("resistencia", item.getType());
         item.setType("fuerza");
         assertEquals("fuerza", item.getType());
     }
 
     @Test
-    public void getMuscle() {
+    public void getMuscleTest() {
         assertEquals("pechito", item.getMuscle());
     }
 
     @Test
-    public void setMuscle() {
+    public void setMuscleTest() {
         assertEquals("pechito", item.getMuscle());
         item.setMuscle("pecho");
         assertEquals("pecho", item.getMuscle());
     }
 
     @Test
-    public void getEquipment() {
+    public void getEquipmentTest() {
         assertEquals("barra", item.getEquipment());
     }
 
     @Test
-    public void setEquipment() {
+    public void setEquipmentTest() {
         assertEquals("barra", item.getEquipment());
         item.setEquipment("nada");
         assertEquals("nada", item.getEquipment());
     }
 
     @Test
-    public void getDifficulty() {
+    public void getDifficultyTest() {
         assertEquals("mu dura mu dura", item.getDifficulty());
     }
 
     @Test
-    public void setDifficulty() {
+    public void setDifficultyTest() {
         assertEquals("mu dura mu dura", item.getDifficulty());
         item.setDifficulty("nahh");
         assertEquals("nahh", item.getDifficulty());
     }
 
     @Test
-    public void getInstructions() {
+    public void getInstructionsTest() {
         assertEquals("Tienes que ser masoca para meter este ejercicio en favoritos", item.getInstructions());
     }
 
     @Test
-    public void setInstructions() {
+    public void setInstructionsTest() {
         assertEquals("Tienes que ser masoca para meter este ejercicio en favoritos", item.getInstructions());
         item.setInstructions("levanta la barra y asi hasta 100");
         assertEquals("levanta la barra y asi hasta 100", item.getInstructions());
     }
 
     @Test
-    public void getUserid() {
+    public void getUseridTest() {
         assertEquals(7, item.getUserid());
     }
 
     @Test
-    public void setUserid() {
+    public void setUseridTest() {
         assertEquals(7, item.getUserid());
         item.setUserid(9);
         assertEquals(9, item.getUserid());
