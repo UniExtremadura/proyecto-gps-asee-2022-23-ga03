@@ -121,6 +121,7 @@ public class DigestTest {
 
     }
 
+    @Test
     public void getSubTest() {
         assertEquals(1, item.getSub().size());
         assertEquals("labelSub", item.getSub().get(0).getLabel());
@@ -132,6 +133,7 @@ public class DigestTest {
 
     }
 
+    @Test
     public void setSubTest() {
         assertEquals(1, item.getSub().size());
         assertEquals("labelSub", item.getSub().get(0).getLabel());
