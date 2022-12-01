@@ -2,6 +2,7 @@ package es.unex.giiis.asee.proyecto.ui.recetas;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +27,8 @@ import java.util.List;
 import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.databinding.FragmentRecetasBinding;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RecetasFragment extends Fragment implements RecipesListAdapter.OnListInteractionListener {
 
@@ -35,6 +38,10 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
     private RecyclerView.LayoutManager layoutManager;
     private Toolbar mToolbar;
     private ImageButton favoriteButton;
+
+    public void setDataSource (List<Recipe> data) {
+        mAdapter.swap(data);
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
