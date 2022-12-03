@@ -2,6 +2,9 @@ package es.unex.giiis.asee.proyecto.login_register;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,14 +20,18 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.MainActivity;
+import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
+import es.unex.giiis.asee.proyecto.viewmodels.UserViewModel;
 
 public class LoginActivity extends AppCompatActivity implements LoginView{
 
-    private static final int SIGN_UP_REQUEST = 0;
-    private static final String TAG = "Dietas_fragment";
+    private static final String TAG = "LOGIN_ACTIVITY";
+
+    private UserViewModel mUserViewModel;
 
     private LoginValidator mLoginValidator;
     private EditText username, password;
@@ -38,13 +45,35 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        new AsyncLoad().execute();
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+
+        mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.userFactory).get(UserViewModel.class);
+
+        mUserViewModel.getAllUsers().observe(this, new Observer<List<UserItem>>() {
+            @Override
+            public void onChanged(List<UserItem> userItems) {
+                users = userItems;
+            }
+        });
 
         sp = getSharedPreferences("UserPref", MODE_PRIVATE);
         mLoginValidator = new LoginValidator(this);
 
         bindViews();
-        recover();
+
+        long id = sp.getLong("id", 0);
+        mUserViewModel.setSessionId(id);
+        mUserViewModel.getCurrentUser().observe(this, new Observer<UserItem>() {
+            @Override
+            public void onChanged(UserItem userItem) {
+                if (userItem != null) {
+                    username.setText(userItem.getUsername());
+                    password.setText(userItem.getPassword());
+                }
+            }
+        });
+
+
         gif.setVisibility(View.INVISIBLE);
 
         log.setOnClickListener(v -> {
@@ -68,37 +97,9 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         gif = findViewById(R.id.gif);
     }
 
-    private void recover() {
-        String username = sp.getString("username", "");
-        String password = sp.getString("password", "");
-
-        Log.d("Username recover:", username);
-        Log.d("Password recover:", password);
-
-        if (!username.equals("")) {
-            this.username.setText(username);
-            if (!password.equals("")) {
-                this.password.setText(password);
-            }
-        }
-    }
-
     private void launchRegister() {
         Intent intent = new Intent(this, RegisterActivity.class);
-        startActivityForResult(intent, SIGN_UP_REQUEST);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        log("Entered onActivityResult()");
-
-        if (requestCode == SIGN_UP_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                new AsyncLoad().execute();
-                recover();
-            }
-        }
+        startActivity(intent);
     }
 
     private void log(String msg){
@@ -115,8 +116,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         gif.setVisibility(View.INVISIBLE);
 
         Toast.makeText(LoginActivity.this, "Username or password invalid", Toast.LENGTH_SHORT).show();
-        password.setText("");
-        username.setText("");
     }
 
     @Override
@@ -125,29 +124,12 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
 
         SharedPreferences.Editor editor = sp.edit();
         editor.putLong("id", user.getId());
-        editor.putString("username",user.getUsername());
-        editor.putString("password",user.getPassword());
         editor.apply();
+
+        mUserViewModel.setSessionId(user.getId());
 
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
-    }
-
-    class AsyncLoad extends AsyncTask<Void, Void, List<UserItem>> {
-
-        @Override
-        protected List<UserItem> doInBackground(Void... voids){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(LoginActivity.this);
-            List<UserItem> items = nutrifitDb.userItemDao().getAll();
-
-            return items;
-        }
-
-        @Override
-        protected void onPostExecute(List<UserItem> items){
-            super.onPostExecute(items);
-            users = items;
-        }
     }
 }

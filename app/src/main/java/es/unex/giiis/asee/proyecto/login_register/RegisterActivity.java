@@ -2,6 +2,9 @@ package es.unex.giiis.asee.proyecto.login_register;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,8 +19,13 @@ import android.widget.Toast;
 import java.util.Date;
 import java.util.List;
 
+import es.unex.giiis.asee.proyecto.AppContainer;
+import es.unex.giiis.asee.proyecto.AppExecutors;
+import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
+import es.unex.giiis.asee.proyecto.viewmodels.UserViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.WeightViewModel;
 
 public class RegisterActivity extends AppCompatActivity implements RegisterView {
     private RegisterValidator mRegisterValidator;
@@ -27,12 +35,25 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
     private SharedPreferences sp;
     private List<UserItem> users;
 
+    private UserViewModel mUserViewModel;
+    private WeightViewModel mWeightRecordItem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        new AsyncLoad().execute();
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+
+        mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.userFactory).get(UserViewModel.class);
+        mWeightRecordItem = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.weightFactory).get(WeightViewModel.class);
+
+        mUserViewModel.getAllUsers().observe(this, new Observer<List<UserItem>>() {
+            @Override
+            public void onChanged(List<UserItem> userItems) {
+                users = userItems;
+            }
+        });
 
         mRegisterValidator = new RegisterValidator(this);
 
@@ -86,13 +107,23 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
 
     @Override
     public void registerSuccessful(UserItem user) {
-        user.setAge(Math.round(user.getAge()));
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString("username",user.getUsername());
-        editor.putString("password",user.getPassword());
-        editor.apply();
-
-        new AsyncUserInsert().execute(user);
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                long id = mUserViewModel.insert(user);
+                AppExecutors.getInstance().mainThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mUserViewModel.setSessionId(id);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putLong("id", id);
+                        editor.apply();
+                    }
+                });
+                mWeightRecordItem.insert(new WeightRecordItem(id, formatWeight(String.valueOf(weight.getText())), new Date()));
+                finishRegister();
+            }
+        });
     }
 
     private void finishRegister() {
@@ -174,61 +205,5 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
         gif.setVisibility(View.INVISIBLE);
         Toast toast = Toast.makeText(RegisterActivity.this, R.string.height_format, Toast.LENGTH_LONG);
         toast.show();
-    }
-
-    class AsyncLoad extends AsyncTask<Void, Void, List<UserItem>> {
-
-        @Override
-        protected List<UserItem> doInBackground(Void... voids){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(RegisterActivity.this);
-            List<UserItem> items = nutrifitDb.userItemDao().getAll();
-
-            return items;
-        }
-
-        @Override
-        protected void onPostExecute(List<UserItem> items){
-            super.onPostExecute(items);
-            users = items;
-        }
-    }
-
-    class AsyncUserInsert extends AsyncTask<UserItem, Void, UserItem>{
-
-        @Override
-        protected UserItem doInBackground(UserItem... items){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(RegisterActivity.this);
-            Long id = nutrifitDb.userItemDao().insert(items[0]);
-
-            items[0].setId(id);
-
-            return items[0];
-        }
-
-        @Override
-        protected void onPostExecute(UserItem item){
-
-            super.onPostExecute(item);
-            new AsyncRecordInsert().execute(new WeightRecordItem(item.getId(), item.getWeight(), new Date()));
-        }
-    }
-
-    class AsyncRecordInsert extends AsyncTask<WeightRecordItem, Void, WeightRecordItem>{
-
-        @Override
-        protected WeightRecordItem doInBackground(WeightRecordItem... items){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(RegisterActivity.this);
-            Long id = nutrifitDb.weightRecordItemDao().insert(items[0]);
-
-            items[0].setId(id);
-
-            return items[0];
-        }
-
-        @Override
-        protected void onPostExecute(WeightRecordItem item){
-            super.onPostExecute(item);
-            finishRegister();
-        }
     }
 }

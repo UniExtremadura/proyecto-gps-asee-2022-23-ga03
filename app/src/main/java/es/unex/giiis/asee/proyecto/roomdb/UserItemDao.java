@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.proyecto.roomdb;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -20,8 +21,14 @@ public interface UserItemDao {
     @Query("SELECT * FROM usuarios")
     public List<UserItem> getAll();
 
+    @Query("SELECT * FROM usuarios")
+    public LiveData<List<UserItem>> getAllLv();
+
     @Query("SELECT * FROM usuarios WHERE id = :id")
     public UserItem getUser(long id);
+
+    @Query("SELECT * FROM usuarios WHERE id = :id")
+    public LiveData<UserItem> getUserLv(long id);
 
     @Insert
     public long insert(UserItem item);

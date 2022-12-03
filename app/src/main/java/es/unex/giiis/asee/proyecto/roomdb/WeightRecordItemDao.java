@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.proyecto.roomdb;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -11,6 +12,9 @@ public interface WeightRecordItemDao {
 
     @Query("SELECT * FROM records WHERE userid = :userid")
     public List<WeightRecordItem> getAllFromUser(long userid);
+
+    @Query("SELECT * FROM records WHERE userid = :userid")
+    public LiveData<List<WeightRecordItem>> getAllFromUserLv(long userid);
 
     @Insert
     public long insert(WeightRecordItem item);
