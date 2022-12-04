@@ -9,8 +9,12 @@ import androidx.lifecycle.Transformations;
 import java.util.List;
 
 import es.unex.giiis.asee.proyecto.AppExecutors;
+import es.unex.giiis.asee.proyecto.exercisesModel.Excercise;
 import es.unex.giiis.asee.proyecto.login_register.UserItem;
 import es.unex.giiis.asee.proyecto.login_register.WeightRecordItem;
+import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
+import es.unex.giiis.asee.proyecto.repository.network.ExcercisesNetworkDataSource;
+import es.unex.giiis.asee.proyecto.repository.network.RecipesNetworkDataSource;
 import es.unex.giiis.asee.proyecto.roomdb.PlantillaItemDao;
 import es.unex.giiis.asee.proyecto.roomdb.UserItemDao;
 import es.unex.giiis.asee.proyecto.roomdb.WeightRecordItemDao;
@@ -27,20 +31,27 @@ public class NutrifitRepository {
     private WeightRecordItemDao mWeightDao;
     private PlantillaItemDao mDietDao;
 
+    private final RecipesNetworkDataSource mRecipesNetworkDataSource;
+    private final ExcercisesNetworkDataSource mExcercisesNetworkDataSource;
+
     public synchronized static NutrifitRepository getInstance(UserItemDao userDao, WeightRecordItemDao weightDao,
-                                                              PlantillaItemDao dietDao) {
+                                                              PlantillaItemDao dietDao, RecipesNetworkDataSource recipesNetworkDataSource,
+                                                              ExcercisesNetworkDataSource excercisesNetworkDataSource) {
         Log.d(LOG_TAG, "Getting the repository");
         if (sInstance == null) {
-            sInstance = new NutrifitRepository(userDao, weightDao, dietDao);
+            sInstance = new NutrifitRepository(userDao, weightDao, dietDao, recipesNetworkDataSource, excercisesNetworkDataSource);
             Log.d(LOG_TAG, "Made new repository");
         }
         return sInstance;
     }
 
-    private NutrifitRepository(UserItemDao userDao, WeightRecordItemDao weightDao, PlantillaItemDao dietDao) {
+    private NutrifitRepository(UserItemDao userDao, WeightRecordItemDao weightDao, PlantillaItemDao dietDao,
+                               RecipesNetworkDataSource recipesNetworkDataSource, ExcercisesNetworkDataSource excercisesNetworkDataSource) {
         mUserDao = userDao;
         mWeightDao = weightDao;
         mDietDao = dietDao;
+        mRecipesNetworkDataSource = recipesNetworkDataSource;
+        mExcercisesNetworkDataSource = excercisesNetworkDataSource;
         userId = new MutableLiveData<>();
     }
 
@@ -66,6 +77,25 @@ public class NutrifitRepository {
 
     public LiveData<List<PlantillaItem>> getUserDiets(){
         return Transformations.switchMap(getUserId(), mDietDao::getAllFromUserLv);
+    }
+
+    public LiveData<List<Recipe>> getCurrentDownloadedRecipes() {
+        return mRecipesNetworkDataSource.getCurrentRecipes();
+    }
+
+
+    public LiveData<List<Excercise>> getCurrentDownloadedExcercises() {
+        return mExcercisesNetworkDataSource.getCurrentExcercises();
+    }
+
+    public void doFetchRecipes(){
+        Log.d(LOG_TAG, "Fetching Recipes from Edamam API");
+        mRecipesNetworkDataSource.fetchRecipes();
+    }
+
+    public void doFetchExcercises(){
+        Log.d(LOG_TAG, "Fetching Excercises from Ninja API");
+        mExcercisesNetworkDataSource.fetchExcercises();
     }
 
     public void insertWeightRecord(WeightRecordItem item) {

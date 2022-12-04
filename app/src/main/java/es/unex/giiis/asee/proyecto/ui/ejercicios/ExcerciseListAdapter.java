@@ -74,9 +74,9 @@ public class ExcerciseListAdapter extends RecyclerView.Adapter<ExcerciseListAdap
     }
 
     public void swap(List<Excercise> dataset) {
+        mDataset.clear();
         mDataset = dataset;
         notifyDataSetChanged();
-        Log.d("prueba", mDataset.get(1).getName());
     }
 
 

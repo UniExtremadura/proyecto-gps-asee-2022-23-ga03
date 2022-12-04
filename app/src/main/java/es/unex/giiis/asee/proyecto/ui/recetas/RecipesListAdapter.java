@@ -105,6 +105,7 @@ public class RecipesListAdapter extends RecyclerView.Adapter<RecipesListAdapter.
     }
 
     public void swap(List<Recipe> dataset){
+        mDataset.clear();
         mDataset = dataset;
         notifyDataSetChanged();
     }

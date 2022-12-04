@@ -9,13 +9,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.gson.Gson;
 
@@ -23,9 +28,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.AppExecutors;
+import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.databinding.FragmentRecetasBinding;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
+import es.unex.giiis.asee.proyecto.viewmodels.RecipeListViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.UserViewModel;
 
 public class RecetasFragment extends Fragment implements RecipesListAdapter.OnListInteractionListener {
 
@@ -35,6 +44,10 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
     private RecyclerView.LayoutManager layoutManager;
     private Toolbar mToolbar;
     private ImageButton favoriteButton;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ProgressBar mProgressBar;
+
+    private RecipeListViewModel mRecipeListViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -42,10 +55,13 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
         binding = FragmentRecetasBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
+
+        mRecipeListViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.recipeFactory).get(RecipeListViewModel.class);
+
         mToolbar = binding.toolbar;
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Recipes");
-        setHasOptionsMenu(true);
 
         recyclerView = (RecyclerView) binding.recipelist;
 
@@ -56,12 +72,6 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new RecipesListAdapter(new ArrayList<>(), this);
 
-        if(savedInstanceState != null){
-            mAdapter.swap((List<Recipe>) savedInstanceState.getSerializable("Data"));
-        } else {
-            AppExecutors.getInstance().networkIO().execute(new RecipesNetworkLoaderRunnable(recipes -> mAdapter.swap(recipes)));
-        }
-
         recyclerView.setAdapter(mAdapter);
 
         favoriteButton.setOnClickListener(view -> {
@@ -69,27 +79,30 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
             startActivity(intent);
         });
 
+        mProgressBar = binding.progressBar;
+        mSwipeRefreshLayout = binding.swipeRefreshLayout;
+        mSwipeRefreshLayout.setOnRefreshListener(mRecipeListViewModel::fetchRecipes);
+
+        mRecipeListViewModel.getDownloadedRecipes().observe(getViewLifecycleOwner(), recipes -> {
+            mAdapter.swap(recipes);
+            if (recipes != null && recipes.size() != 0)
+                showRecipesDataView();
+            else
+                showLoading();
+        });
+
         return root;
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable("Data", (Serializable) mAdapter.getDataset());
+    private void showLoading(){
+        mProgressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.INVISIBLE);
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu,inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
-        return true;
+    private void showRecipesDataView(){
+        mProgressBar.setVisibility(View.GONE);
+        mSwipeRefreshLayout.setRefreshing(false);
+        recyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
