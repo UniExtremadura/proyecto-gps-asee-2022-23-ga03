@@ -1,7 +1,6 @@
 package es.unex.giiis.asee.proyecto.viewmodels;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.List;
@@ -18,6 +17,7 @@ public class UserViewModel extends ViewModel {
     public UserViewModel (NutrifitRepository repository) {
         mRepository = repository;
         mAllUsers = mRepository.getAllUsers();
+        mCurrentUser = mRepository.getUser();
     }
 
     public LiveData<List<UserItem>> getAllUsers() {
@@ -35,5 +35,9 @@ public class UserViewModel extends ViewModel {
 
     public long insert(UserItem item) {
         return mRepository.insertUser(item);
+    }
+
+    public void update(UserItem item) {
+        mRepository.updateUser(item);
     }
 }

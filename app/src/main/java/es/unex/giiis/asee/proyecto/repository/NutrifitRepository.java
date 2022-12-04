@@ -11,8 +11,10 @@ import java.util.List;
 import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.login_register.UserItem;
 import es.unex.giiis.asee.proyecto.login_register.WeightRecordItem;
+import es.unex.giiis.asee.proyecto.roomdb.PlantillaItemDao;
 import es.unex.giiis.asee.proyecto.roomdb.UserItemDao;
 import es.unex.giiis.asee.proyecto.roomdb.WeightRecordItemDao;
+import es.unex.giiis.asee.proyecto.ui.horario.PlantillaItem;
 
 public class NutrifitRepository {
     private static final String LOG_TAG = NutrifitRepository.class.getSimpleName();
@@ -23,19 +25,22 @@ public class NutrifitRepository {
     private final MutableLiveData<Long> userId;
     private UserItemDao mUserDao;
     private WeightRecordItemDao mWeightDao;
+    private PlantillaItemDao mDietDao;
 
-    public synchronized static NutrifitRepository getInstance(UserItemDao userDao, WeightRecordItemDao weightDao) {
+    public synchronized static NutrifitRepository getInstance(UserItemDao userDao, WeightRecordItemDao weightDao,
+                                                              PlantillaItemDao dietDao) {
         Log.d(LOG_TAG, "Getting the repository");
         if (sInstance == null) {
-            sInstance = new NutrifitRepository(userDao, weightDao);
+            sInstance = new NutrifitRepository(userDao, weightDao, dietDao);
             Log.d(LOG_TAG, "Made new repository");
         }
         return sInstance;
     }
 
-    private NutrifitRepository(UserItemDao userDao, WeightRecordItemDao weightDao) {
+    private NutrifitRepository(UserItemDao userDao, WeightRecordItemDao weightDao, PlantillaItemDao dietDao) {
         mUserDao = userDao;
         mWeightDao = weightDao;
+        mDietDao = dietDao;
         userId = new MutableLiveData<>();
     }
 
@@ -59,11 +64,31 @@ public class NutrifitRepository {
         return Transformations.switchMap(getUserId(), mWeightDao::getAllFromUserLv);
     }
 
-    public long insertUser(UserItem item) {
-        return mUserDao.insert(item);
+    public LiveData<List<PlantillaItem>> getUserDiets(){
+        return Transformations.switchMap(getUserId(), mDietDao::getAllFromUserLv);
     }
 
     public void insertWeightRecord(WeightRecordItem item) {
         mWeightDao.insert(item);
+    }
+
+    public long insertUser(UserItem item) {
+        return mUserDao.insert(item);
+    }
+
+    public void updateUser(UserItem item) {
+        AppExecutors.getInstance().diskIO().execute(() ->mUserDao.update(item));
+    }
+
+    public void insertDiet(PlantillaItem item) {
+        AppExecutors.getInstance().diskIO().execute(() -> mDietDao.insert(item));
+    }
+
+    public void updateDiet(PlantillaItem item) {
+        AppExecutors.getInstance().diskIO().execute(() -> mDietDao.update(item));
+    }
+
+    public void deleteDiet(PlantillaItem item) {
+        AppExecutors.getInstance().diskIO().execute(() -> mDietDao.delete(item));
     }
 }

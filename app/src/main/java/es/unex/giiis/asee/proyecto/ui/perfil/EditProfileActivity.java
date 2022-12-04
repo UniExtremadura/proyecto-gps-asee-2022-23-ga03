@@ -3,11 +3,15 @@ package es.unex.giiis.asee.proyecto.ui.perfil;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,12 +20,16 @@ import android.widget.Toast;
 import java.util.Date;
 import java.util.List;
 
+import es.unex.giiis.asee.proyecto.AppContainer;
+import es.unex.giiis.asee.proyecto.AppExecutors;
+import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.login_register.RegisterActivity;
 import es.unex.giiis.asee.proyecto.login_register.RegisterValidator;
 import es.unex.giiis.asee.proyecto.login_register.UserItem;
 import es.unex.giiis.asee.proyecto.login_register.WeightRecordItem;
 import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
+import es.unex.giiis.asee.proyecto.viewmodels.UserViewModel;
 
 public class EditProfileActivity extends AppCompatActivity implements EditProfileView{
 
@@ -29,29 +37,51 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     private EditText username, completename, email, age, height, old_password, password, repeat_password;
     private Button edit;
     private List<UserItem> users;
-    private UserItem user;
     private Toolbar mToolbar;
+    private UserItem currentUser;
+
+    private UserViewModel mUserViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        user = new UserItem(getIntent());
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
-        new AsyncLoad().execute();
+        mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.userFactory).get(UserViewModel.class);
+
+        bindViews();
+
+        mUserViewModel.getCurrentUser().observe(this, new Observer<UserItem>() {
+            @Override
+            public void onChanged(UserItem item) {
+                username.setText(item.getUsername());
+                completename.setText(item.getCompletename());
+                email.setText(item.getEmail());
+                age.setText(String.valueOf(item.getAge()));
+                height.setText(String.valueOf(item.getHeight()));
+                currentUser = item;
+            }
+        });
+
+        mUserViewModel.getAllUsers().observe(this, new Observer<List<UserItem>>() {
+            @Override
+            public void onChanged(List<UserItem> userItems) {
+                users = userItems;
+            }
+        });
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Edit profile");
 
-        editProfileValidator = new EditProfileValidator(this, user);
-        bindViews();
-        fillInformation();
+        editProfileValidator = new EditProfileValidator(this);
 
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("TAG", currentUser.toLog());
                 editProfileValidator.validateEdit(String.valueOf(username.getText()).trim(), String.valueOf(completename.getText()).trim(), String.valueOf(email.getText()).trim(), formatAge(String.valueOf(age.getText())), formatHeight(String.valueOf(height.getText())), String.valueOf(old_password.getText()).trim(), String.valueOf(password.getText()).trim(), String.valueOf(repeat_password.getText()).trim());
             }
         });
@@ -83,27 +113,25 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     }
 
     @Override
-    public void editSuccessful() {
-        modifyUser();
-        new AsyncUpdate().execute(user);
+    public UserItem getCurrentUser() {
+        return currentUser;
     }
 
-    private void fillInformation() {
-        username.setText(user.getUsername());
-        completename.setText(user.getCompletename());
-        email.setText(user.getEmail());
-        age.setText(String.valueOf(user.getAge()));
-        height.setText(String.valueOf(user.getHeight()));
+    @Override
+    public void editSuccessful() {
+        modifyUser();
+        mUserViewModel.update(currentUser);
+        finish();
     }
 
     private void modifyUser() {
-        user.setUsername(String.valueOf(username.getText()));
-        user.setCompletename(String.valueOf(completename.getText()));
-        user.setEmail(String.valueOf(email.getText()));
-        user.setAge(Math.round(Long.parseLong(String.valueOf(age.getText()))));
-        user.setHeight(Double.parseDouble(String.valueOf(height.getText())));
+        currentUser.setUsername(String.valueOf(username.getText()));
+        currentUser.setCompletename(String.valueOf(completename.getText()));
+        currentUser.setEmail(String.valueOf(email.getText()));
+        currentUser.setAge(Math.round(Long.parseLong(String.valueOf(age.getText()))));
+        currentUser.setHeight(Double.parseDouble(String.valueOf(height.getText())));
         if(!String.valueOf(password.getText()).equals("")) {
-            user.setPassword(String.valueOf(password.getText()));
+            currentUser.setPassword(String.valueOf(password.getText()));
         }
     }
 
@@ -172,48 +200,5 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     public void registerFailureHeight() {
         Toast toast = Toast.makeText(EditProfileActivity.this, R.string.height_format, Toast.LENGTH_LONG);
         toast.show();
-    }
-
-    private void finishEdit() {
-        Intent data = new Intent();
-        setResult(RESULT_OK, data);
-        UserItem.packageIntent(data, user.getId(), user.getUsername(),
-                user.getCompletename(), user.getEmail(), user.getAge(),
-                user.getWeight(), user.getHeight(), user.getPassword());
-        finish();
-    }
-
-    class AsyncLoad extends AsyncTask<Void, Void, List<UserItem>> {
-
-        @Override
-        protected List<UserItem> doInBackground(Void... voids){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(EditProfileActivity.this);
-            List<UserItem> items = nutrifitDb.userItemDao().getAll();
-
-            return items;
-        }
-
-        @Override
-        protected void onPostExecute(List<UserItem> items){
-            super.onPostExecute(items);
-            users = items;
-        }
-    }
-
-    class AsyncUpdate extends AsyncTask<UserItem, Void, UserItem>{
-
-        @Override
-        protected UserItem doInBackground(UserItem... items){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(EditProfileActivity.this);
-            int rows = nutrifitDb.userItemDao().update(items[0]);
-
-            return items[0];
-        }
-
-        @Override
-        protected void onPostExecute(UserItem item){
-            super.onPostExecute(item);
-            finishEdit();
-        }
     }
 }

@@ -6,6 +6,7 @@ import es.unex.giiis.asee.proyecto.login_register.UserItem;
 
 public interface EditProfileView {
     List<UserItem> getUsers();
+    UserItem getCurrentUser();
     void editSuccessful();
     void editFailureUsername();
     void editFailureEmail();

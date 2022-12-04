@@ -10,6 +10,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,8 +28,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.io.Serializable;
 import java.util.List;
 
+import es.unex.giiis.asee.proyecto.AppContainer;
+import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
+import es.unex.giiis.asee.proyecto.viewmodels.DietViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.UserViewModel;
 
 
 public class DietasFragment extends Fragment implements PlantillaAdapter.OnDeleteClickListener, PlantillaAdapter.OnModifyClickListener {
@@ -39,9 +46,8 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private PlantillaAdapter mAdapter;
-    private SharedPreferences sp;
-    private static final int MODIFY_PLANTILLA_ITEM_REQUEST = 1;
 
+    private DietViewModel mDietViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,7 +57,9 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
 
         mRecyclerView = v.findViewById(R.id.recyclerView);
 
-        sp = getActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
+        AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
+
+        mDietViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.dietFactory).get(DietViewModel.class);
 
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -80,23 +88,14 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
 
         mRecyclerView.setAdapter(mAdapter);
 
+        mDietViewModel.getUserDiets().observe(getViewLifecycleOwner(), new Observer<List<PlantillaItem>>() {
+            @Override
+            public void onChanged(List<PlantillaItem> plantillaItems) {
+                mAdapter.load(plantillaItems);
+            }
+        });
+
         return v;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // Load saved ToDoItems, if necessary
-
-        if (mAdapter.getItemCount() == 0)
-            loadItems();
-    }
-
-    private void loadItems() {
-
-        //Se cargan los items almacenados en la base de datos
-        new AsyncLoad().execute();
     }
 
     private void log(String msg) {
@@ -118,15 +117,7 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
                 PlantillaItem item = new PlantillaItem(data);
 
                 //Se inserta el item recibido en la base de datos
-                new AsyncInsert().execute(item);
-            }
-        }
-        else if (requestCode == MODIFY_PLANTILLA_ITEM_REQUEST) {
-            if (resultCode == RESULT_OK){
-                PlantillaItem item = new PlantillaItem(data);
-
-                //Se actualiza el item recibido en la base de datos
-                new AsyncUpdate().execute(item);
+                mDietViewModel.insert(item);
             }
         }
     }
@@ -134,8 +125,9 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
     @Override
     public void onModifyClick(PlantillaItem item) {
         Intent intent = new Intent(getContext(), ModifyPlantillaActivity.class);
-        PlantillaItem.packageIntent(intent, item.getId(), item.getTitle(), item.getPriority(), item.getDay(), sp.getLong("id", 0));
-        startActivityForResult(intent,MODIFY_PLANTILLA_ITEM_REQUEST);
+        PlantillaItem.packageIntent(intent, item.getId(), item.getTitle(), item.getPriority(),
+                item.getDay(), item.getUserid());
+        startActivity(intent);
     }
 
     @Override
@@ -153,83 +145,10 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
         cancelButton.setOnClickListener(v -> dialog.dismiss());
 
         final Button submitButton = dialog.findViewById(R.id.yesButton);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new AsyncDelete().execute(item);
-                dialog.dismiss();
-            }
+        submitButton.setOnClickListener(v -> {
+            mDietViewModel.delete(item);
+            dialog.dismiss();
         });
-
         dialog.show();
-    }
-
-    class AsyncLoad extends AsyncTask<Void, Void, List<PlantillaItem>> {
-
-        @Override
-        protected List<PlantillaItem> doInBackground(Void... voids) {
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
-            List<PlantillaItem> items = nutrifitDb.plantillaItemDao().getAll(sp.getLong("id", 0));
-
-            return items;
-        }
-
-        @Override
-        protected void onPostExecute(List<PlantillaItem> items) {
-            super.onPostExecute(items);
-            mAdapter.load(items);
-        }
-    }
-
-    class AsyncInsert extends AsyncTask<PlantillaItem, Void, PlantillaItem> {
-
-        @Override
-        protected PlantillaItem doInBackground(PlantillaItem... items) {
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
-            Long id = nutrifitDb.plantillaItemDao().insert(items[0]);
-
-            items[0].setId(id);
-
-            return items[0];
-        }
-
-        @Override
-        protected void onPostExecute(PlantillaItem item) {
-            super.onPostExecute(item);
-            mAdapter.add(item);
-        }
-    }
-
-
-    class AsyncDelete extends AsyncTask<PlantillaItem, Void, PlantillaItem> {
-        @Override
-        protected PlantillaItem doInBackground(PlantillaItem... items) {
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
-            int respuesta = nutrifitDb.plantillaItemDao().delete(items[0]);
-
-            return items[0];
-        }
-
-        @Override
-        protected void onPostExecute(PlantillaItem item) {
-            super.onPostExecute(item);
-            mAdapter.delete(item);
-        }
-    }
-
-    class AsyncUpdate extends AsyncTask<PlantillaItem, Void, PlantillaItem>{
-        @Override
-        protected PlantillaItem doInBackground(PlantillaItem... items){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
-            int respuesta = nutrifitDb.plantillaItemDao().update(items[0]);
-
-            return items[0];
-        }
-
-        @Override
-        protected void onPostExecute(PlantillaItem item){
-            super.onPostExecute(item);
-            mAdapter.update(item);
-        }
     }
 }

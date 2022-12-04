@@ -4,11 +4,9 @@ import es.unex.giiis.asee.proyecto.login_register.UserItem;
 
 public class EditProfileValidator {
     private final EditProfileView mEditProfileView;
-    private UserItem user;
     private final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
-    EditProfileValidator(EditProfileView editProfileView, UserItem item) {
-        user = item;
+    EditProfileValidator(EditProfileView editProfileView) {
         mEditProfileView = editProfileView;
     }
 
@@ -20,7 +18,7 @@ public class EditProfileValidator {
             mEditProfileView.failureEmailFormat();
         } else if (!newPassword.equals(passwordRepeat)) {
             mEditProfileView.editFailurePasswords();
-        } else if (!oldPassword.equals(user.getPassword())) {
+        } else if (!oldPassword.equals(mEditProfileView.getCurrentUser().getPassword())) {
             mEditProfileView.editFailurePasswordOld();
         } else if (age <= 0 || age > 90) {
             mEditProfileView.editFailureAge();
@@ -38,7 +36,7 @@ public class EditProfileValidator {
     private boolean existsUser(String username) {
         boolean flag = false;
         for(UserItem user : mEditProfileView.getUsers()) {
-            if(username.equals(user.getUsername()) && this.user.getId() != user.getId()) {
+            if(username.equals(user.getUsername()) && mEditProfileView.getCurrentUser().getId() != user.getId()) {
                 flag =true;
                 break;
             }
@@ -49,7 +47,7 @@ public class EditProfileValidator {
     private boolean existEmail(String email) {
         boolean flag = false;
         for(UserItem user : mEditProfileView.getUsers()) {
-            if(email.equals(user.getEmail()) && this.user.getId() != user.getId()) {
+            if(email.equals(user.getEmail()) && mEditProfileView.getCurrentUser().getId() != user.getId()) {
                 flag =true;
                 break;
             }

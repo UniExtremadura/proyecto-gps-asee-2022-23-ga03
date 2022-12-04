@@ -6,10 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.preference.PreferenceFragmentCompat;
 
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.login_register.LoginActivity;
@@ -31,8 +29,6 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 SharedPreferences.Editor editor = sp.edit();
                 editor.remove("id");
-                editor.remove("username");
-                editor.remove("password");
                 editor.apply();
                 Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
                 startActivity(intent);

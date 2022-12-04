@@ -99,13 +99,6 @@ public class PlantillaAdapter extends RecyclerView.Adapter<PlantillaAdapter.View
 
     }
 
-    public void clear() {
-
-        mItems.clear();
-        notifyDataSetChanged();
-
-    }
-
     public void load(List<PlantillaItem> items) {
 
         mItems.clear();

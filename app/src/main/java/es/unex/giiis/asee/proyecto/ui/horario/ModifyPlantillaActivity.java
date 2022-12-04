@@ -2,6 +2,8 @@ package es.unex.giiis.asee.proyecto.ui.horario;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,10 +20,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import es.unex.giiis.asee.proyecto.AppContainer;
+import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.ui.horario.PlantillaItem;
+import es.unex.giiis.asee.proyecto.viewmodels.DietViewModel;
 
-public class ModifyPlantillaActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+public class ModifyPlantillaActivity extends AppCompatActivity {
 
     private static final String TAG = "Modify_Plantilla_Activity";
 
@@ -33,10 +38,17 @@ public class ModifyPlantillaActivity extends AppCompatActivity implements Adapte
     private final List<String> priorityList = new ArrayList<>(Stream.of(PlantillaItem.Priority.values()).map(Enum::name).collect(Collectors.toList()));
     private PlantillaItem item;
 
+    private DietViewModel mDietViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify_plantilla);
+
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+
+        mDietViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.dietFactory).get(DietViewModel.class);
+
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -71,10 +83,7 @@ public class ModifyPlantillaActivity extends AppCompatActivity implements Adapte
                 log("Entered cancelButton.OnClickListener.onClick()");
 
                 // - Implement onClick().
-                Intent data = new Intent();
-                setResult(RESULT_CANCELED, data);
                 finish();
-
             }
         });
 
@@ -86,8 +95,6 @@ public class ModifyPlantillaActivity extends AppCompatActivity implements Adapte
             public void onClick(View v) {
                 log("Entered submitButton.OnClickListener.onClick()");
 
-                // Gather ToDoItem data
-
                 // - Get Priority
                 PlantillaItem.Priority priority = getPriority();
 
@@ -97,12 +104,10 @@ public class ModifyPlantillaActivity extends AppCompatActivity implements Adapte
                 // -  Title
                 String titleString = mTitleText.getText().toString();
 
-                // Package ToDoItem data into an Intent
-                Intent data = new Intent();
-                PlantillaItem.packageIntent(data, item.getId(), titleString, priority, day, item.getUserid());
+                PlantillaItem data = new PlantillaItem(item.getId(), titleString, priority, day, item.getUserid());
 
-                // - return data Intent and finish
-                setResult(RESULT_OK, data);
+                mDietViewModel.update(data);
+
                 finish();
             }
         });
@@ -127,15 +132,5 @@ public class ModifyPlantillaActivity extends AppCompatActivity implements Adapte
             e.printStackTrace();
         }
         Log.i(TAG, msg);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
     }
 }
