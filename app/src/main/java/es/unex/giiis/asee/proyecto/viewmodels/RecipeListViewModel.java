@@ -15,7 +15,6 @@ public class RecipeListViewModel extends ViewModel {
 
     public RecipeListViewModel(NutrifitRepository repository) {
         mRepository = repository;
-        fetchRecipes();
         mDownloadedRecipes = mRepository.getCurrentDownloadedRecipes();
     }
 

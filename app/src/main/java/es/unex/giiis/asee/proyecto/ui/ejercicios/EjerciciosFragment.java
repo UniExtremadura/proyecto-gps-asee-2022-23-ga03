@@ -59,7 +59,7 @@ public class EjerciciosFragment extends Fragment implements ExcerciseListAdapter
 
         AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
 
-        mExcerciseListViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.excerciseFactory).get(ExcerciseListViewModel.class);
+        mExcerciseListViewModel = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.excerciseFactory).get(ExcerciseListViewModel.class);
 
         mToolbar = binding.toolbar;
         favoriteButton = binding.favoriteButtonList;
@@ -109,9 +109,8 @@ public class EjerciciosFragment extends Fragment implements ExcerciseListAdapter
     @Override
     public void onListInteraction(Excercise excercise) {
         Intent intent = new Intent(getActivity(), DetallesEjercicioSwipeActivity.class);
+
         intent.putExtra("Name", excercise.getName());
-        List<Excercise> data = mAdapter.getDataset();
-        intent.putExtra("Data", (Serializable) data);
 
         startActivity(intent);
     }

@@ -1,7 +1,6 @@
 package es.unex.giiis.asee.proyecto.ui.recetas;
 
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -12,12 +11,13 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import java.util.List;
 
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
+import es.unex.giiis.asee.proyecto.viewmodels.RecipeListViewModel;
 
 public class DetallesRecetaPagerAdapter extends FragmentStateAdapter {
 
     private List<Recipe> data;
 
-    public DetallesRecetaPagerAdapter(List<Recipe> data, @NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
+    public DetallesRecetaPagerAdapter(List<Recipe> data,  @NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
         super(fragmentManager, lifecycle);
         this.data = data;
     }
@@ -35,5 +35,9 @@ public class DetallesRecetaPagerAdapter extends FragmentStateAdapter {
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    public void setData(List<Recipe> data) {
+        this.data = data;
     }
 }

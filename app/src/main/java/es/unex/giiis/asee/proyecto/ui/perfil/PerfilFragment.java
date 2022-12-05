@@ -43,7 +43,7 @@ public class PerfilFragment extends Fragment {
 
         AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
 
-        mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.userFactory).get(UserViewModel.class);
+        mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.userFactory).get(UserViewModel.class);
 
         mToolbar = binding.toolbar;
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);

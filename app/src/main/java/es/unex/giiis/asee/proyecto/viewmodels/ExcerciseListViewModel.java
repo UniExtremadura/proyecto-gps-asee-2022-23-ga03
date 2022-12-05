@@ -16,7 +16,6 @@ public class ExcerciseListViewModel extends ViewModel {
 
     public ExcerciseListViewModel(NutrifitRepository repository) {
         mRepository = repository;
-        fetchExcercises();
         mDownloadedExcercises = mRepository.getCurrentDownloadedExcercises();
     }
 

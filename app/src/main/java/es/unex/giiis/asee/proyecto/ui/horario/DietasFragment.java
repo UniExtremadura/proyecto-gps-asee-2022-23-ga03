@@ -59,7 +59,7 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
 
         AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
 
-        mDietViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.dietFactory).get(DietViewModel.class);
+        mDietViewModel = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.dietFactory).get(DietViewModel.class);
 
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);

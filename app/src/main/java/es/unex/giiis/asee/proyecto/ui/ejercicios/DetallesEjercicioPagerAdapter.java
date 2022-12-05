@@ -37,5 +37,9 @@ public class DetallesEjercicioPagerAdapter extends FragmentStateAdapter {
     public int getItemCount() {
         return data.size();
     }
+
+    public void setData(List<Excercise> excercises) {
+        data = excercises;
+    }
 }
 

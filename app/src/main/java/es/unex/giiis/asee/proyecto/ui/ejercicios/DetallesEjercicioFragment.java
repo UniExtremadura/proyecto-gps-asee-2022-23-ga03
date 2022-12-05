@@ -52,17 +52,19 @@ public class DetallesEjercicioFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_detalles_ejercicio, container, false);
+
+        bindViews(v);
+
         Bundle args = getArguments();
         excercise = (Excercise) args.getSerializable("Details");
+
         mToolbar = v.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Excercise details");
-        setHasOptionsMenu(true);
 
         sp = getActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
         new AsyncLoad().execute();
 
-        bindViews(v);
         fillInformation();
 
         bHorario.setOnClickListener (v1 -> agregarAHorario ());
@@ -141,7 +143,7 @@ public class DetallesEjercicioFragment extends Fragment {
         Toast toast;
         if (requestCode == ADD_TO_CALENDAR) {
             if (resultCode == RESULT_OK) {
-                toast = Toast.makeText(getContext(), "Exercise added to diet", Toast.LENGTH_LONG);
+                toast = Toast.makeText(getContext(), "Exercise added to calendar", Toast.LENGTH_LONG);
             } else {
                 toast = Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_LONG);
             }

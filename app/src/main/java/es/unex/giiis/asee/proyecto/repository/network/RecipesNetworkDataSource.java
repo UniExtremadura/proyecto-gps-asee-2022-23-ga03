@@ -20,6 +20,7 @@ public class RecipesNetworkDataSource {
 
     private RecipesNetworkDataSource() {
         mDownloadedRecipes = new MutableLiveData<>();
+        fetchRecipes();
     }
 
     public synchronized static RecipesNetworkDataSource getInstance() {

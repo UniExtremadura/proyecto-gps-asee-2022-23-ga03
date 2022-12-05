@@ -39,7 +39,7 @@ public class WeightGraphFragment extends Fragment {
 
         AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
 
-        mWeightRecordItem = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.weightFactory).get(WeightViewModel.class);
+        mWeightRecordItem = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.weightFactory).get(WeightViewModel.class);
 
         mWeightRecordItem.getAllRecords().observe(getViewLifecycleOwner(), new Observer<List<WeightRecordItem>>() {
             @Override

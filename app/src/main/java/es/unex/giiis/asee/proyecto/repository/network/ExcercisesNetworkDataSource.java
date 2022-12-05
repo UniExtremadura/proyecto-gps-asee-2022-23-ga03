@@ -20,6 +20,7 @@ public class ExcercisesNetworkDataSource {
 
     private ExcercisesNetworkDataSource() {
         mDownloadedExcercises = new MutableLiveData<>();
+        fetchExcercises();
     }
 
     public synchronized static ExcercisesNetworkDataSource getInstance() {

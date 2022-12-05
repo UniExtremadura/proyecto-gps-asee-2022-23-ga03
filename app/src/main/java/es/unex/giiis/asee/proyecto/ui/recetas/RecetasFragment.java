@@ -57,7 +57,7 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
 
         AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
 
-        mRecipeListViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.recipeFactory).get(RecipeListViewModel.class);
+        mRecipeListViewModel = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.recipeFactory).get(RecipeListViewModel.class);
 
         mToolbar = binding.toolbar;
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
@@ -113,8 +113,6 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
         String myJson = gson.toJson(recipe);
 
         intent.putExtra("Recipe", myJson);
-        List<Recipe> data = mAdapter.getDataset();
-        intent.putExtra("Data", (Serializable) data);
 
         startActivity(intent);
     }
