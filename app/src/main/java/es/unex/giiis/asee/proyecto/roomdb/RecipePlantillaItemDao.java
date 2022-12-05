@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.proyecto.roomdb;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -14,6 +15,9 @@ import es.unex.giiis.asee.proyecto.ui.horario.RecipePlantillaItem;
 public interface RecipePlantillaItemDao {
     @Query("SELECT * FROM recipesdiet WHERE plantillaid = :plantillaid")
     public List<RecipePlantillaItem> getAllFromPlantilla(long plantillaid);
+
+    @Query("SELECT * FROM recipesdiet WHERE plantillaid = :plantillaid")
+    public LiveData<List<RecipePlantillaItem>> getAllFromPlantillaLv(long plantillaid);
 
     @Insert
     public long insert(RecipePlantillaItem item);

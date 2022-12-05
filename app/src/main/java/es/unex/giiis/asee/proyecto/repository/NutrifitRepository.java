@@ -16,9 +16,11 @@ import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
 import es.unex.giiis.asee.proyecto.repository.network.ExcercisesNetworkDataSource;
 import es.unex.giiis.asee.proyecto.repository.network.RecipesNetworkDataSource;
 import es.unex.giiis.asee.proyecto.roomdb.PlantillaItemDao;
+import es.unex.giiis.asee.proyecto.roomdb.RecipePlantillaItemDao;
 import es.unex.giiis.asee.proyecto.roomdb.UserItemDao;
 import es.unex.giiis.asee.proyecto.roomdb.WeightRecordItemDao;
 import es.unex.giiis.asee.proyecto.ui.horario.PlantillaItem;
+import es.unex.giiis.asee.proyecto.ui.horario.RecipePlantillaItem;
 
 public class NutrifitRepository {
     private static final String LOG_TAG = NutrifitRepository.class.getSimpleName();
@@ -30,26 +32,30 @@ public class NutrifitRepository {
     private UserItemDao mUserDao;
     private WeightRecordItemDao mWeightDao;
     private PlantillaItemDao mDietDao;
+    private RecipePlantillaItemDao mRecipeDietDao;
 
     private final RecipesNetworkDataSource mRecipesNetworkDataSource;
     private final ExcercisesNetworkDataSource mExcercisesNetworkDataSource;
 
     public synchronized static NutrifitRepository getInstance(UserItemDao userDao, WeightRecordItemDao weightDao,
-                                                              PlantillaItemDao dietDao, RecipesNetworkDataSource recipesNetworkDataSource,
+                                                              PlantillaItemDao dietDao, RecipePlantillaItemDao recipeDietDao,
+                                                              RecipesNetworkDataSource recipesNetworkDataSource,
                                                               ExcercisesNetworkDataSource excercisesNetworkDataSource) {
         Log.d(LOG_TAG, "Getting the repository");
         if (sInstance == null) {
-            sInstance = new NutrifitRepository(userDao, weightDao, dietDao, recipesNetworkDataSource, excercisesNetworkDataSource);
+            sInstance = new NutrifitRepository(userDao, weightDao, dietDao, recipeDietDao, recipesNetworkDataSource, excercisesNetworkDataSource);
             Log.d(LOG_TAG, "Made new repository");
         }
         return sInstance;
     }
 
     private NutrifitRepository(UserItemDao userDao, WeightRecordItemDao weightDao, PlantillaItemDao dietDao,
-                               RecipesNetworkDataSource recipesNetworkDataSource, ExcercisesNetworkDataSource excercisesNetworkDataSource) {
+                               RecipePlantillaItemDao recipeDietDao, RecipesNetworkDataSource recipesNetworkDataSource,
+                               ExcercisesNetworkDataSource excercisesNetworkDataSource) {
         mUserDao = userDao;
         mWeightDao = weightDao;
         mDietDao = dietDao;
+        mRecipeDietDao = recipeDietDao;
         mRecipesNetworkDataSource = recipesNetworkDataSource;
         mExcercisesNetworkDataSource = excercisesNetworkDataSource;
         userId = new MutableLiveData<>();
@@ -83,9 +89,12 @@ public class NutrifitRepository {
         return mRecipesNetworkDataSource.getCurrentRecipes();
     }
 
-
     public LiveData<List<Excercise>> getCurrentDownloadedExcercises() {
         return mExcercisesNetworkDataSource.getCurrentExcercises();
+    }
+
+    public LiveData<List<RecipePlantillaItem>> getAllRecipesFromPlantilla(long id) {
+        return mRecipeDietDao.getAllFromPlantillaLv(id);
     }
 
     public void doFetchRecipes(){
@@ -120,5 +129,13 @@ public class NutrifitRepository {
 
     public void deleteDiet(PlantillaItem item) {
         AppExecutors.getInstance().diskIO().execute(() -> mDietDao.delete(item));
+    }
+
+    public void insertRecipeDiet(RecipePlantillaItem item) {
+        AppExecutors.getInstance().diskIO().execute(() -> mRecipeDietDao.insert(item));
+    }
+
+    public void deleteRecipeDiet(RecipePlantillaItem item) {
+        AppExecutors.getInstance().diskIO().execute(() -> mRecipeDietDao.delete(item));
     }
 }

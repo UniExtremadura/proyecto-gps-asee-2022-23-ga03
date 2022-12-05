@@ -61,41 +61,6 @@ public class DetallesPlantillaAdapter extends RecyclerView.Adapter<DetallesPlant
         return mItems.size();
     }
 
-    public void add(RecipePlantillaItem item) {
-
-        mItems.add(item);
-        notifyDataSetChanged();
-
-    }
-
-    public void update(RecipePlantillaItem item) {
-
-        int i = 0;
-        for (RecipePlantillaItem recipePlantillaItem : mItems) {
-            if (recipePlantillaItem.getId() == item.getId()) {
-                mItems.set(i, item);
-                break;
-            }
-            i++;
-        }
-        notifyDataSetChanged();
-
-    }
-
-    public void delete(RecipePlantillaItem item) {
-
-        int i = 0;
-        for (RecipePlantillaItem recipePlantillaItem : mItems) {
-            if (recipePlantillaItem.getId() == item.getId()) {
-                mItems.remove(i);
-                break;
-            }
-            i++;
-        }
-        notifyDataSetChanged();
-
-    }
-
     public void load(List<RecipePlantillaItem> items) {
 
         mItems.clear();

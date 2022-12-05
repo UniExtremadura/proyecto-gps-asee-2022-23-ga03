@@ -3,10 +3,7 @@ package es.unex.giiis.asee.proyecto.ui.horario;
 import static android.app.Activity.RESULT_OK;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -25,15 +22,12 @@ import android.widget.Button;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.Serializable;
 import java.util.List;
 
 import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
 import es.unex.giiis.asee.proyecto.viewmodels.DietViewModel;
-import es.unex.giiis.asee.proyecto.viewmodels.UserViewModel;
 
 
 public class DietasFragment extends Fragment implements PlantillaAdapter.OnDeleteClickListener, PlantillaAdapter.OnModifyClickListener {
@@ -64,26 +58,18 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new PlantillaAdapter(this, new PlantillaAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(PlantillaItem item) {
-                Intent intent = new Intent(getContext(), DetallesPlantillaSwipeActivity.class);
-                List<PlantillaItem> data = mAdapter.getList();
-                intent.putExtra("data", (Serializable) data);
-                PlantillaItem.packageIntent(intent, item.getId(), item.getTitle(),
-                        item.getPriority(), item.getDay(), item.getUserid());
-                startActivity(intent);
+        mAdapter = new PlantillaAdapter(this, item -> {
+            Intent intent = new Intent(getContext(), DetallesPlantillaSwipeActivity.class);
+            PlantillaItem.packageIntent(intent, item.getId(), item.getTitle(),
+                    item.getPriority(), item.getDay(), item.getUserid());
+            startActivity(intent);
 
-            }
         }, this);
 
         FloatingActionButton mButton = v.findViewById(R.id.fab);
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getContext(), AddPlantillaActivity.class);
-                startActivityForResult(intent, ADD_PLANTILLA_ITEM_REQUEST);
-            }
+        mButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), AddPlantillaActivity.class);
+            startActivityForResult(intent, ADD_PLANTILLA_ITEM_REQUEST);
         });
 
         mRecyclerView.setAdapter(mAdapter);

@@ -64,41 +64,6 @@ public class PlantillaAdapter extends RecyclerView.Adapter<PlantillaAdapter.View
         return mItems.size();
     }
 
-    public void add(PlantillaItem item) {
-
-        mItems.add(item);
-        notifyDataSetChanged();
-
-    }
-
-    public void update(PlantillaItem item) {
-
-        int i = 0;
-        for (PlantillaItem plantillaItem : mItems) {
-            if (plantillaItem.getId() == item.getId()) {
-                mItems.set(i, item);
-                break;
-            }
-            i++;
-        }
-        notifyDataSetChanged();
-
-    }
-
-    public void delete(PlantillaItem item) {
-
-        int i = 0;
-        for (PlantillaItem plantillaItem : mItems) {
-            if (plantillaItem.getId() == item.getId()) {
-                mItems.remove(i);
-                break;
-            }
-            i++;
-        }
-        notifyDataSetChanged();
-
-    }
-
     public void load(List<PlantillaItem> items) {
 
         mItems.clear();

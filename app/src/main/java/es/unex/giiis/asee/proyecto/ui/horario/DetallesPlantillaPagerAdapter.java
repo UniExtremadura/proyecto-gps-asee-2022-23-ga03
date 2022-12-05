@@ -10,6 +10,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.List;
 
+import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
+
 public class DetallesPlantillaPagerAdapter extends FragmentStateAdapter {
 
     private List<PlantillaItem> data;
@@ -32,6 +34,10 @@ public class DetallesPlantillaPagerAdapter extends FragmentStateAdapter {
     @Override
     public int getItemCount() {
         return data.size();
+    }
+
+    public void setData(List<PlantillaItem> data) {
+        this.data = data;
     }
 }
 

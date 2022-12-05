@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -21,10 +24,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import es.unex.giiis.asee.proyecto.AppContainer;
+import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
+import es.unex.giiis.asee.proyecto.viewmodels.DietRecipesViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.DietViewModel;
 
-public class AddRecipeToDietaActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class AddRecipeToDietaActivity extends AppCompatActivity {
 
     private static final String TAG = "Add/MODIFY_Receta_Dieta_Activity";
 
@@ -33,13 +40,20 @@ public class AddRecipeToDietaActivity extends AppCompatActivity implements Adapt
     private Spinner mDietSpinner;
     private Spinner mPeriodSpinner;
     private final List<String> periodList = new ArrayList<>(Stream.of(RecipePlantillaItem.Period.values()).map(Enum::name).collect(Collectors.toList()));
-    private SharedPreferences sp;
     private RecipePlantillaItem item;
+
+    private DietViewModel mDietViewModel;
+    private DietRecipesViewModel mDietRecipesViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe_to_dieta);
+
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+
+        mDietViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.dietFactory).get(DietViewModel.class);
+        mDietRecipesViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.recipesDietFactory).get(DietRecipesViewModel.class);
 
         item = new RecipePlantillaItem(getIntent());
 
@@ -47,14 +61,15 @@ public class AddRecipeToDietaActivity extends AppCompatActivity implements Adapt
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Add recipe to diet");
 
-
-
-        sp = getSharedPreferences("UserPref", MODE_PRIVATE);
-
         mDietSpinner = findViewById(R.id.diet_spinner);
         mPeriodSpinner  = findViewById(R.id.period_spinner);
 
-        new AsyncLoad().execute();
+        mDietViewModel.getUserDiets().observe(this, new Observer<List<PlantillaItem>>() {
+            @Override
+            public void onChanged(List<PlantillaItem> plantillaItems) {
+                loadDietSpinner(plantillaItems);
+            }
+        });
 
         ArrayAdapter<String> periodAdapter = new ArrayAdapter<>(AddRecipeToDietaActivity.this, android.R.layout.simple_spinner_dropdown_item, periodList);
         periodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -79,8 +94,10 @@ public class AddRecipeToDietaActivity extends AppCompatActivity implements Adapt
             item.setPeriod(getPeriod());
             item.setPlantillaid(getPlantillaid());
 
-            log(item.toLog());
-            new AsyncInsert().execute(item);
+            mDietRecipesViewModel.insert(item);
+            Intent data = new Intent();
+            setResult(RESULT_OK, data);
+            finish();
         });
 
     }
@@ -114,54 +131,5 @@ public class AddRecipeToDietaActivity extends AppCompatActivity implements Adapt
             e.printStackTrace();
         }
         Log.i(TAG, msg);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        //nothing
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        //nothing
-    }
-
-    class AsyncLoad extends AsyncTask<Void, Void, List<PlantillaItem>> {
-
-        @Override
-        protected List<PlantillaItem> doInBackground(Void... voids){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(AddRecipeToDietaActivity.this);
-            List<PlantillaItem> items = nutrifitDb.plantillaItemDao().getAll(sp.getLong("id", 0));
-
-            return items;
-        }
-
-        @Override
-        protected void onPostExecute(List<PlantillaItem> items){
-            super.onPostExecute(items);
-            loadDietSpinner(items);
-        }
-    }
-
-    class AsyncInsert extends AsyncTask<RecipePlantillaItem, Void, RecipePlantillaItem> {
-
-        @Override
-        protected RecipePlantillaItem doInBackground(RecipePlantillaItem... items){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(AddRecipeToDietaActivity.this);
-            long id = nutrifitDb.recipePlantillaItemDao().insert(items[0]);
-
-            items[0].setId(id);
-
-            return items[0];
-        }
-
-        @Override
-        protected void onPostExecute(RecipePlantillaItem item){
-            super.onPostExecute(item);
-
-            Intent data = new Intent();
-            setResult(RESULT_OK, data);
-            finish();
-        }
     }
 }
