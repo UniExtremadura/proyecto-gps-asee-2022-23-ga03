@@ -29,7 +29,7 @@ public class DietRecipesViewModel extends ViewModel {
     }
 
     public LiveData<List<RecipePlantillaItem>> getCurrentDietRecipes() {
-        return Transformations.switchMap(currentPlantillaId, mRepository::getAllRecipesFromPlantilla);
+        return Transformations.switchMap(getCurrentPlantillaId(), mRepository::getAllRecipesFromPlantilla);
     }
 
     public void insert(RecipePlantillaItem item) {

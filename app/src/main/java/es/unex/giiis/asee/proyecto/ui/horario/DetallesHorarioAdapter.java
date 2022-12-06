@@ -63,20 +63,6 @@ public class DetallesHorarioAdapter extends RecyclerView.Adapter<DetallesHorario
         return mItems.size();
     }
 
-    public void delete(CalendarDayItem item) {
-
-        int i = 0;
-        for (CalendarDayItem calendarDayItem : mItems) {
-            if (calendarDayItem.getId() == item.getId()) {
-                mItems.remove(i);
-                break;
-            }
-            i++;
-        }
-        notifyDataSetChanged();
-
-    }
-
     public void load(List<CalendarDayItem> items) {
 
         mItems.clear();

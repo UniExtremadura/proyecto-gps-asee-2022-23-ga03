@@ -15,10 +15,12 @@ import es.unex.giiis.asee.proyecto.login_register.WeightRecordItem;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
 import es.unex.giiis.asee.proyecto.repository.network.ExcercisesNetworkDataSource;
 import es.unex.giiis.asee.proyecto.repository.network.RecipesNetworkDataSource;
+import es.unex.giiis.asee.proyecto.roomdb.CalendarDayItemDao;
 import es.unex.giiis.asee.proyecto.roomdb.PlantillaItemDao;
 import es.unex.giiis.asee.proyecto.roomdb.RecipePlantillaItemDao;
 import es.unex.giiis.asee.proyecto.roomdb.UserItemDao;
 import es.unex.giiis.asee.proyecto.roomdb.WeightRecordItemDao;
+import es.unex.giiis.asee.proyecto.ui.horario.CalendarDayItem;
 import es.unex.giiis.asee.proyecto.ui.horario.PlantillaItem;
 import es.unex.giiis.asee.proyecto.ui.horario.RecipePlantillaItem;
 
@@ -33,29 +35,33 @@ public class NutrifitRepository {
     private WeightRecordItemDao mWeightDao;
     private PlantillaItemDao mDietDao;
     private RecipePlantillaItemDao mRecipeDietDao;
+    private CalendarDayItemDao mCalendarDayItemDao;
 
     private final RecipesNetworkDataSource mRecipesNetworkDataSource;
     private final ExcercisesNetworkDataSource mExcercisesNetworkDataSource;
 
     public synchronized static NutrifitRepository getInstance(UserItemDao userDao, WeightRecordItemDao weightDao,
                                                               PlantillaItemDao dietDao, RecipePlantillaItemDao recipeDietDao,
+                                                              CalendarDayItemDao calendarDayItemDao,
                                                               RecipesNetworkDataSource recipesNetworkDataSource,
                                                               ExcercisesNetworkDataSource excercisesNetworkDataSource) {
         Log.d(LOG_TAG, "Getting the repository");
         if (sInstance == null) {
-            sInstance = new NutrifitRepository(userDao, weightDao, dietDao, recipeDietDao, recipesNetworkDataSource, excercisesNetworkDataSource);
+            sInstance = new NutrifitRepository(userDao, weightDao, dietDao, recipeDietDao, calendarDayItemDao, recipesNetworkDataSource, excercisesNetworkDataSource);
             Log.d(LOG_TAG, "Made new repository");
         }
         return sInstance;
     }
 
     private NutrifitRepository(UserItemDao userDao, WeightRecordItemDao weightDao, PlantillaItemDao dietDao,
-                               RecipePlantillaItemDao recipeDietDao, RecipesNetworkDataSource recipesNetworkDataSource,
+                               RecipePlantillaItemDao recipeDietDao, CalendarDayItemDao calendarDayItemDao,
+                               RecipesNetworkDataSource recipesNetworkDataSource,
                                ExcercisesNetworkDataSource excercisesNetworkDataSource) {
         mUserDao = userDao;
         mWeightDao = weightDao;
         mDietDao = dietDao;
         mRecipeDietDao = recipeDietDao;
+        mCalendarDayItemDao = calendarDayItemDao;
         mRecipesNetworkDataSource = recipesNetworkDataSource;
         mExcercisesNetworkDataSource = excercisesNetworkDataSource;
         userId = new MutableLiveData<>();
@@ -95,6 +101,14 @@ public class NutrifitRepository {
 
     public LiveData<List<RecipePlantillaItem>> getAllRecipesFromPlantilla(long id) {
         return mRecipeDietDao.getAllFromPlantillaLv(id);
+    }
+
+    public LiveData<List<CalendarDayItem>> getAllUserEvents() {
+        return Transformations.switchMap(getUserId(), mCalendarDayItemDao::getAllFromUserLv);
+    }
+
+    public LiveData<List<CalendarDayItem>> getAllEventsFromDate(String date) {
+        return Transformations.switchMap(getUserId(), input -> mCalendarDayItemDao.getAllFromDateLv(input, date));
     }
 
     public void doFetchRecipes(){
@@ -137,5 +151,17 @@ public class NutrifitRepository {
 
     public void deleteRecipeDiet(RecipePlantillaItem item) {
         AppExecutors.getInstance().diskIO().execute(() -> mRecipeDietDao.delete(item));
+    }
+
+    public void insertEvent(CalendarDayItem item) {
+        AppExecutors.getInstance().diskIO().execute(() -> mCalendarDayItemDao.insert(item));
+    }
+
+    public void updateEvent(CalendarDayItem item) {
+        AppExecutors.getInstance().diskIO().execute(() -> mCalendarDayItemDao.update(item));
+    }
+
+    public void deleteEvent(CalendarDayItem item) {
+        AppExecutors.getInstance().diskIO().execute(() -> mCalendarDayItemDao.delete(item));
     }
 }

@@ -1,15 +1,9 @@
 package es.unex.giiis.asee.proyecto.ui.horario;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.DialogFragment;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,15 +14,20 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import java.text.DateFormat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
+
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 
+import es.unex.giiis.asee.proyecto.AppContainer;
+import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
+import es.unex.giiis.asee.proyecto.viewmodels.EventViewModel;
 
 public class AddEventToHorarioActivity extends AppCompatActivity {
 
@@ -49,10 +48,17 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
     private CalendarDayItem item;
     private String mode;
 
+    private EventViewModel mEventViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_event_to_horario);
+
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+
+        mEventViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.eventsFactory).get(EventViewModel.class);
+
 
         item = new CalendarDayItem(getIntent());
         mode = getIntent().getStringExtra("Mode");
@@ -138,14 +144,13 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
                 item.setTime(time);
 
                 if(mode.equals("Insert")) {
-                    new AsyncInsert().execute(item);
+                    mEventViewModel.insert(item);
                 } else {
-                    Intent data = new Intent();
-                    CalendarDayItem.packageIntent(data, item.getId(), item.getTitle(), item.getWebid(),
-                            item.getStatus(), item.getDate(), item.getTime(), item.getUserid(), item.getType());
-                    setResult(RESULT_OK, data);
-                    finish();
+                    mEventViewModel.update(item);
                 }
+                Intent data = new Intent();
+                setResult(RESULT_OK, data);
+                finish();
             }
         });
     }
@@ -289,27 +294,5 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Log.i(TAG, msg);
-    }
-
-    class AsyncInsert extends AsyncTask<CalendarDayItem, Void, CalendarDayItem> {
-
-        @Override
-        protected CalendarDayItem doInBackground(CalendarDayItem... items){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(AddEventToHorarioActivity.this);
-            Long id = nutrifitDb.calendarDayItemDao().insert(items[0]);
-
-            items[0].setId(id);
-
-            return items[0];
-        }
-
-        @Override
-        protected void onPostExecute(CalendarDayItem item){
-            super.onPostExecute(item);
-
-            Intent data = new Intent();
-            setResult(RESULT_OK, data);
-            finish();
-        }
     }
 }
