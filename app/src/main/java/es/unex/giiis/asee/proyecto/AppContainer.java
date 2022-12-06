@@ -10,6 +10,8 @@ import es.unex.giiis.asee.proyecto.viewmodels.DietRecipesViewModelFactory;
 import es.unex.giiis.asee.proyecto.viewmodels.DietViewModelFactory;
 import es.unex.giiis.asee.proyecto.viewmodels.EventViewModelFactory;
 import es.unex.giiis.asee.proyecto.viewmodels.ExcerciseListViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.FavoriteExcerciseViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.FavoriteRecipeViewModelFactory;
 import es.unex.giiis.asee.proyecto.viewmodels.RecipeListViewModelFactory;
 import es.unex.giiis.asee.proyecto.viewmodels.UserViewModelFactory;
 import es.unex.giiis.asee.proyecto.viewmodels.WeightViewModelFactory;
@@ -28,14 +30,16 @@ public class AppContainer {
     public ExcerciseListViewModelFactory excerciseFactory;
     public DietRecipesViewModelFactory recipesDietFactory;
     public EventViewModelFactory eventsFactory;
+    public FavoriteExcerciseViewModelFactory favoriteExcerciseFactory;
+    public FavoriteRecipeViewModelFactory favoriteRecipeFactory;
 
     public AppContainer(Context context){
         database = NutrifitDatabase.getDatabase(context);
         recipesNetworkDataSource = RecipesNetworkDataSource.getInstance();
         excercisesNetworkDataSource = ExcercisesNetworkDataSource.getInstance();
         repository = NutrifitRepository.getInstance(database.userItemDao(), database.weightRecordItemDao(),
-                database.plantillaItemDao(), database.recipePlantillaItemDao(),
-                database.calendarDayItemDao(),
+                database.plantillaItemDao(), database.recipePlantillaItemDao(), database.calendarDayItemDao(),
+                database.favoriteExcerciseItemDao(), database.favoriteRecipeItemDao(),
                 recipesNetworkDataSource, excercisesNetworkDataSource);
 
         userFactory = new UserViewModelFactory(repository);
@@ -45,5 +49,7 @@ public class AppContainer {
         excerciseFactory = new ExcerciseListViewModelFactory(repository);
         recipesDietFactory = new DietRecipesViewModelFactory(repository);
         eventsFactory = new EventViewModelFactory(repository);
+        favoriteExcerciseFactory = new FavoriteExcerciseViewModelFactory(repository);
+        favoriteRecipeFactory = new FavoriteRecipeViewModelFactory(repository);
     }
 }

@@ -1,5 +1,6 @@
 package es.unex.giiis.asee.proyecto.roomdb;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -14,6 +15,9 @@ public interface FavoriteRecipeItemDao {
 
     @Query("SELECT * FROM recipefavorites WHERE userid = :userid")
     public List<FavoriteRecipeItem> getAll(long userid);
+
+    @Query("SELECT * FROM recipefavorites WHERE userid = :userid")
+    public LiveData<List<FavoriteRecipeItem>> getAllLv(long userid);
 
     @Insert
     public long insert(FavoriteRecipeItem item);

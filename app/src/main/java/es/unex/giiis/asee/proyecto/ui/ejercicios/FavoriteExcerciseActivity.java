@@ -1,25 +1,24 @@
 package es.unex.giiis.asee.proyecto.ui.ejercicios;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.Bundle;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.unex.giiis.asee.proyecto.AppContainer;
+import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
-import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
-import es.unex.giiis.asee.proyecto.ui.recetas.FavoriteRecipeActivity;
-import es.unex.giiis.asee.proyecto.ui.recetas.FavoriteRecipeItem;
-import es.unex.giiis.asee.proyecto.ui.recetas.FavoriteRecipeListAdapter;
+import es.unex.giiis.asee.proyecto.viewmodels.FavoriteExcerciseViewModel;
 
 public class FavoriteExcerciseActivity extends AppCompatActivity implements FavoriteExcerciseListAdapter.OnListInteractionListener, FavoriteExcerciseListAdapter.OnDeleteButtonInteractionListener {
 
@@ -27,18 +26,21 @@ public class FavoriteExcerciseActivity extends AppCompatActivity implements Favo
     private RecyclerView.LayoutManager layoutManager;
     private FavoriteExcerciseListAdapter mAdapter;
     private Toolbar mToolbar;
-    private SharedPreferences sp;
+
+    private FavoriteExcerciseViewModel mFavoriteExcerciseViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite_excercise);
 
+        AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
+
+        mFavoriteExcerciseViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.favoriteExcerciseFactory).get(FavoriteExcerciseViewModel.class);
+
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Favorites");
-
-        sp = getSharedPreferences("UserPref", MODE_PRIVATE);
 
         recyclerView = findViewById(R.id.favoritelist);
         recyclerView.setHasFixedSize(true);
@@ -46,14 +48,14 @@ public class FavoriteExcerciseActivity extends AppCompatActivity implements Favo
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new FavoriteExcerciseListAdapter(new ArrayList<>(), this, this);
 
+        mFavoriteExcerciseViewModel.getUserFavorites().observe(this, new Observer<List<FavoriteExcerciseItem>>() {
+            @Override
+            public void onChanged(List<FavoriteExcerciseItem> favoriteExcerciseItems) {
+                mAdapter.swap(favoriteExcerciseItems);
+            }
+        });
+
         recyclerView.setAdapter(mAdapter);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        new AsyncLoad().execute();
     }
 
     @Override
@@ -65,41 +67,6 @@ public class FavoriteExcerciseActivity extends AppCompatActivity implements Favo
 
     @Override
     public void onDeleteInteraction(FavoriteExcerciseItem item) {
-        new AsyncDelete().execute(item);
-    }
-
-    class AsyncLoad extends AsyncTask<Void, Void, List<FavoriteExcerciseItem>> {
-
-        @Override
-        protected List<FavoriteExcerciseItem> doInBackground(Void... voids){
-            long userid = sp.getLong("id", 0);
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(FavoriteExcerciseActivity.this);
-            List<FavoriteExcerciseItem> items = nutrifitDb.favoriteExcerciseItemDao().getAll(userid);
-
-            return items;
-        }
-
-        @Override
-        protected void onPostExecute(List<FavoriteExcerciseItem> items){
-            super.onPostExecute(items);
-            mAdapter.swap(items);
-        }
-    }
-
-    class AsyncDelete extends AsyncTask<FavoriteExcerciseItem, Void, FavoriteExcerciseItem> {
-
-        @Override
-        protected FavoriteExcerciseItem doInBackground(FavoriteExcerciseItem... items){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(FavoriteExcerciseActivity.this);
-            nutrifitDb.favoriteExcerciseItemDao().delete(items[0]);
-
-            return items[0];
-        }
-
-        @Override
-        protected void onPostExecute(FavoriteExcerciseItem item){
-            super.onPostExecute(item);
-            mAdapter.delete(item);
-        }
+        mFavoriteExcerciseViewModel.delete(item.getTittle());
     }
 }

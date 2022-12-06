@@ -6,16 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +16,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -38,36 +36,38 @@ import es.unex.giiis.asee.proyecto.NetworkImageLoaderRunnable;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.recipesmodel.Digest;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
-import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
 import es.unex.giiis.asee.proyecto.ui.horario.AddEventToHorarioActivity;
 import es.unex.giiis.asee.proyecto.ui.horario.AddRecipeToDietaActivity;
 import es.unex.giiis.asee.proyecto.ui.horario.CalendarDayItem;
 import es.unex.giiis.asee.proyecto.ui.horario.RecipePlantillaItem;
-import es.unex.giiis.asee.proyecto.viewmodels.RecipeListViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.FavoriteRecipeViewModel;
 
 public class DetallesRecetaFragment extends Fragment {
 
-    private List<FavoriteRecipeItem> favoritesList;
     private SharedPreferences sp;
     private TextView mRecipeName,mCaloriasRacion, mRaciones, mMealType, mCuisineType, mDishType, mTime, mWeight,
             mIngredientLines, mDietLabels, mHealthLabels, mDietLines;
     private ImageView mImageView;
     private Button bEnlace;
-    private DecimalFormat df = new DecimalFormat("0.00");
     private Toolbar mToolbar;
     private ImageButton bHorario, bDieta, bFavorite;
     private String webid;
     private boolean favoriteState = false;
-    private boolean executing = false;
     private static final int ADD_TO_CALENDAR = 1;
     private static final int ADD_TO_DIET = 0;
     private Recipe recipe;
+
+    private FavoriteRecipeViewModel mFavoriteRecipeViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_detalles_receta, container, false);
+
+        AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
+
+        mFavoriteRecipeViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.favoriteRecipeFactory).get(FavoriteRecipeViewModel.class);
 
         bindViews(v);
 
@@ -79,14 +79,26 @@ public class DetallesRecetaFragment extends Fragment {
 
         fillInformation();
 
-
         mToolbar = v.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Recipe details");
         setHasOptionsMenu(true);
 
         sp = getActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
-        new AsyncLoad().execute();
+
+        mFavoriteRecipeViewModel.getUserFavorites().observe(getViewLifecycleOwner(), new Observer<List<FavoriteRecipeItem>>() {
+            @Override
+            public void onChanged(List<FavoriteRecipeItem> favoriteRecipeItems) {
+                if(favoriteRecipeItems != null) {
+                    for(FavoriteRecipeItem item : favoriteRecipeItems) {
+                        if(item.getWebid().equals(webid)) {
+                            favoriteState = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        });
 
         bEnlace.setOnClickListener(view -> launchWebIntent());
         bHorario.setOnClickListener(v1 -> agregarAHorario());
@@ -223,8 +235,6 @@ public class DetallesRecetaFragment extends Fragment {
 
     public void cambiarFavorito(){
         Log.d("Estado", String.valueOf(favoriteState));
-        if(!executing) {
-            executing = true;
             if(favoriteState) {
                 eliminarFavorito();
                 favoriteState = false;
@@ -232,11 +242,10 @@ public class DetallesRecetaFragment extends Fragment {
                 agregarFavorito();
                 favoriteState = true;
             }
-        }
     }
 
     private void eliminarFavorito(){
-        new AsyncDelete().execute(webid);
+        mFavoriteRecipeViewModel.delete(webid);
         Toast toast = Toast.makeText(getContext(), "Recipe deleted from favorites", Toast.LENGTH_LONG);
         toast.show();
     }
@@ -246,7 +255,7 @@ public class DetallesRecetaFragment extends Fragment {
         FavoriteRecipeItem item = new FavoriteRecipeItem(recipe.getLabel(),
                 recipe.getCalories()/recipe.getYield(),
                 webid, recipe.getImage(),userid);
-        new AsyncInsert().execute(item);
+        mFavoriteRecipeViewModel.insert(item);
         Toast toast = Toast.makeText(getContext(), "Recipe added to favorites", Toast.LENGTH_LONG);
         toast.show();
     }
@@ -269,69 +278,6 @@ public class DetallesRecetaFragment extends Fragment {
                 toast = Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_LONG);
             }
             toast.show();
-        }
-    }
-
-    class AsyncLoad extends AsyncTask<Void, Void, List<FavoriteRecipeItem>> {
-
-        @Override
-        protected List<FavoriteRecipeItem> doInBackground(Void... voids){
-            long userid = sp.getLong("id", 0);
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
-            List<FavoriteRecipeItem> items = nutrifitDb.favoriteRecipeItemDao().getAll(userid);
-
-            return items;
-        }
-
-        @Override
-        protected void onPostExecute(List<FavoriteRecipeItem> items){
-            super.onPostExecute(items);
-            Log.d("Lista de favoritos", items.toString());
-            favoritesList = items;
-            if(favoritesList != null) {
-                for(FavoriteRecipeItem item : favoritesList) {
-                    if(item.getWebid().equals(webid)) {
-                        favoriteState = true;
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    class AsyncInsert extends AsyncTask<FavoriteRecipeItem, Void, FavoriteRecipeItem> {
-
-        @Override
-        protected FavoriteRecipeItem doInBackground(FavoriteRecipeItem... items){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
-            Long id = nutrifitDb.favoriteRecipeItemDao().insert(items[0]);
-
-            items[0].setId(id);
-
-            return items[0];
-        }
-
-        @Override
-        protected void onPostExecute(FavoriteRecipeItem items){
-            super.onPostExecute(items);
-            executing = false;
-        }
-    }
-
-    class AsyncDelete extends AsyncTask<String, Void, Integer> {
-
-        @Override
-        protected Integer doInBackground(String... items){
-            NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(getContext());
-            int rows = nutrifitDb.favoriteRecipeItemDao().delete(items[0]);
-
-            return rows;
-        }
-
-        @Override
-        protected void onPostExecute(Integer rows){
-            super.onPostExecute(rows);
-            executing = false;
         }
     }
 }
