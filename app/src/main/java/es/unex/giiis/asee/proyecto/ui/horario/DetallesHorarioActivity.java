@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,17 +17,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.Gson;
 
-import java.util.List;
-
 import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
 import es.unex.giiis.asee.proyecto.ui.recetas.DetallesRecetaActivity;
-import es.unex.giiis.asee.proyecto.ui.recetas.OnSingleRecipeLoaderListener;
-import es.unex.giiis.asee.proyecto.ui.recetas.SingleRecipeNetworkLoaderRunnable;
+import es.unex.giiis.asee.proyecto.repository.network.OnSingleRecipeLoaderListener;
+import es.unex.giiis.asee.proyecto.repository.network.SingleRecipeNetworkLoaderRunnable;
 import es.unex.giiis.asee.proyecto.viewmodels.EventViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.RecipeListViewModel;
 
 public class DetallesHorarioActivity extends AppCompatActivity implements DetallesHorarioAdapter.OnDeleteClickListener, DetallesHorarioAdapter.OnModifyClickListener {
 
@@ -42,6 +40,7 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
     private DetallesHorarioAdapter mAdapter;
 
     private EventViewModel mEventViewModel;
+    private RecipeListViewModel mRecipeListViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +50,7 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
         mEventViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.eventsFactory).get(EventViewModel.class);
+        mRecipeListViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.recipeFactory).get(RecipeListViewModel.class);
 
         date = getIntent().getStringExtra("Date");
 
@@ -67,18 +67,10 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
             @Override
             public void onItemClick(CalendarDayItem item) {
                 if (item.getType().equals("Recipe")) {
-                    AppExecutors.getInstance().networkIO().execute(new SingleRecipeNetworkLoaderRunnable(item.getWebid(), new OnSingleRecipeLoaderListener() {
-                        @Override
-                        public void onRecipeLoader(Recipe data) {
-                            Intent intent = new Intent(DetallesHorarioActivity.this, DetallesRecetaActivity.class);
-
-                            Gson gson = new Gson();
-                            String myJson = gson.toJson(data);
-
-                            intent.putExtra("Recipe", myJson);
-                            startActivity(intent);
-                        }
-                    }));
+                    mRecipeListViewModel.fetchOneRecipe(item.getWebid());
+                    Intent intent = new Intent(DetallesHorarioActivity.this, DetallesRecetaActivity.class);
+                    intent.putExtra("webid", item.getWebid());
+                    startActivity(intent);
                 }
             }
         });

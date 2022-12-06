@@ -24,8 +24,10 @@ import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
 import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
+import es.unex.giiis.asee.proyecto.ui.horario.DetallesHorarioActivity;
 import es.unex.giiis.asee.proyecto.viewmodels.FavoriteExcerciseViewModel;
 import es.unex.giiis.asee.proyecto.viewmodels.FavoriteRecipeViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.RecipeListViewModel;
 
 public class FavoriteRecipeActivity extends AppCompatActivity implements FavoriteRecipeListAdapter.OnListInteractionListener, FavoriteRecipeListAdapter.OnDeleteButtonInteractionListener {
 
@@ -35,6 +37,7 @@ public class FavoriteRecipeActivity extends AppCompatActivity implements Favorit
     private Toolbar mToolbar;
 
     private FavoriteRecipeViewModel mFavoriteRecipeViewModel;
+    private RecipeListViewModel mRecipeListViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +47,7 @@ public class FavoriteRecipeActivity extends AppCompatActivity implements Favorit
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
         mFavoriteRecipeViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.favoriteRecipeFactory).get(FavoriteRecipeViewModel.class);
+        mRecipeListViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.recipeFactory).get(RecipeListViewModel.class);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -68,7 +72,10 @@ public class FavoriteRecipeActivity extends AppCompatActivity implements Favorit
 
     @Override
     public void onListInteraction(FavoriteRecipeItem item) {
-
+        mRecipeListViewModel.fetchOneRecipe(item.getWebid());
+        Intent intent = new Intent(FavoriteRecipeActivity.this, DetallesRecetaActivity.class);
+        intent.putExtra("webid", item.getWebid());
+        startActivity(intent);
     }
 
     @Override

@@ -140,6 +140,15 @@ public class NutrifitRepository {
         mExcercisesNetworkDataSource.fetchExcercises();
     }
 
+    public void doFetchSingleRecipe(String webid){
+        Log.d(LOG_TAG, "Fetching Recipe from Edamam API");
+        mRecipesNetworkDataSource.fetchOneRecipe(webid);
+    }
+
+    public LiveData<Recipe> getCurrentFetchedRecipe() {
+        return mRecipesNetworkDataSource.getFetchedRecipe();
+    }
+
     public void insertWeightRecord(WeightRecordItem item) {
         mWeightDao.insert(item);
     }

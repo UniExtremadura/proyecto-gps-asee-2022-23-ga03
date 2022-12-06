@@ -9,7 +9,6 @@ import java.util.List;
 
 import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.exercisesModel.Excercise;
-import es.unex.giiis.asee.proyecto.ui.ejercicios.ExercisesNetworkLoaderRunnable;
 
 public class ExcercisesNetworkDataSource {
     private static final String LOG_TAG = RecipesNetworkDataSource.class.getSimpleName();

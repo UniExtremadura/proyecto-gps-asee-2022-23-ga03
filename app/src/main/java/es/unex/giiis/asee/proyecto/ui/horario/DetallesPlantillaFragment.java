@@ -2,7 +2,6 @@ package es.unex.giiis.asee.proyecto.ui.horario;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -29,12 +28,11 @@ import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
-import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
 import es.unex.giiis.asee.proyecto.ui.recetas.DetallesRecetaActivity;
-import es.unex.giiis.asee.proyecto.ui.recetas.OnSingleRecipeLoaderListener;
-import es.unex.giiis.asee.proyecto.ui.recetas.SingleRecipeNetworkLoaderRunnable;
+import es.unex.giiis.asee.proyecto.repository.network.OnSingleRecipeLoaderListener;
+import es.unex.giiis.asee.proyecto.repository.network.SingleRecipeNetworkLoaderRunnable;
 import es.unex.giiis.asee.proyecto.viewmodels.DietRecipesViewModel;
-import es.unex.giiis.asee.proyecto.viewmodels.DietViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.RecipeListViewModel;
 
 public class DetallesPlantillaFragment extends Fragment implements DetallesPlantillaAdapter.OnDeleteClickListener{
 
@@ -50,7 +48,7 @@ public class DetallesPlantillaFragment extends Fragment implements DetallesPlant
     private DetallesPlantillaAdapter mAdapter;
 
     private DietRecipesViewModel mDietRecipesViewModel;
-
+    private RecipeListViewModel mRecipeListViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,6 +59,7 @@ public class DetallesPlantillaFragment extends Fragment implements DetallesPlant
         AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
 
         mDietRecipesViewModel = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.recipesDietFactory).get(DietRecipesViewModel.class);
+        mRecipeListViewModel = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.recipeFactory).get(RecipeListViewModel.class);
 
         Bundle args = getArguments();
         data = (PlantillaItem) args.getSerializable("Details");
@@ -80,18 +79,10 @@ public class DetallesPlantillaFragment extends Fragment implements DetallesPlant
         mAdapter = new DetallesPlantillaAdapter(this, new DetallesPlantillaAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(RecipePlantillaItem item) {
-                AppExecutors.getInstance().networkIO().execute(new SingleRecipeNetworkLoaderRunnable(item.getWebid(), new OnSingleRecipeLoaderListener() {
-                    @Override
-                    public void onRecipeLoader(Recipe data) {
-                        Intent intent = new Intent(getContext(), DetallesRecetaActivity.class);
-
-                        Gson gson = new Gson();
-                        String myJson = gson.toJson(data);
-
-                        intent.putExtra("Recipe", myJson);
-                        startActivity(intent);
-                    }
-                }));
+                mRecipeListViewModel.fetchOneRecipe(item.getWebid());
+                Intent intent = new Intent(getContext(), DetallesRecetaActivity.class);
+                intent.putExtra("webid", item.getWebid());
+                startActivity(intent);
             }
         });
 

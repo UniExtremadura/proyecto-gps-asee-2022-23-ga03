@@ -1,9 +1,11 @@
-package es.unex.giiis.asee.proyecto.ui.recetas;
+package es.unex.giiis.asee.proyecto.repository.network;
 
 import java.io.IOException;
 
 import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.recipesmodel.Hit;
+import es.unex.giiis.asee.proyecto.repository.network.EdamanService;
+import es.unex.giiis.asee.proyecto.repository.network.OnSingleRecipeLoaderListener;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 

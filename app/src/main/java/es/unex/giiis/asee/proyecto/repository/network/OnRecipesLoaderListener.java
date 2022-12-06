@@ -1,4 +1,4 @@
-package es.unex.giiis.asee.proyecto.ui.recetas;
+package es.unex.giiis.asee.proyecto.repository.network;
 
 import java.util.List;
 
