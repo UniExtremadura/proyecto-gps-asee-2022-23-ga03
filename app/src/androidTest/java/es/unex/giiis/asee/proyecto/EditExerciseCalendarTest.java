@@ -44,7 +44,7 @@ import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
 import es.unex.giiis.asee.proyecto.ui.horario.CalendarDayItem;
 
 @RunWith(AndroidJUnit4.class)
-public class EditCalendarUITest {
+public class EditExerciseCalendarTest {
 
     private SharedPreferences sp;
 
@@ -106,7 +106,7 @@ public class EditCalendarUITest {
                         childAtPosition(
                                 withId(com.applandeo.materialcalendarview.R.id.calendarViewPager),
                                 0)))
-                .atPosition(15);
+                .atPosition(16);
         linearLayout.perform(scrollTo(), click());
 
         onView(withId(R.id.recyclerView)).check(matches(hasDescendant(withId(R.id.titleText))));
