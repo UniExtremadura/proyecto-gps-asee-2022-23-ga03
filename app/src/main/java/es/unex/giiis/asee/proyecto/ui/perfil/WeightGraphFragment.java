@@ -91,7 +91,8 @@ public class WeightGraphFragment extends Fragment {
         protected void onPostExecute(List<WeightRecordItem> items){
             super.onPostExecute(items);
             records = items;
-            generateGraph();
+            if(items.size()!=0)
+                generateGraph();
         }
     }
 }
