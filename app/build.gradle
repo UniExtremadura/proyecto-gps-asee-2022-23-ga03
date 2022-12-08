@@ -20,6 +20,11 @@ android {
         unitTests.includeAndroidResources = true
     }
 
+    testOptions {
+        unitTests.returnDefaultValues = true
+        unitTests.includeAndroidResources = true
+    }
+
     buildTypes {
         release {
             minifyEnabled false

@@ -36,10 +36,10 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
     private Toolbar mToolbar;
     private ImageButton favoriteButton;
 
-
     public void setDataSource(List<Recipe> data){
         mAdapter.swap(data);
     }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
