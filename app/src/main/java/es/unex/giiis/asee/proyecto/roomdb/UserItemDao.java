@@ -23,6 +23,9 @@ public interface UserItemDao {
     @Query("SELECT * FROM usuarios WHERE id = :id")
     public UserItem getUser(long id);
 
+    @Query("DELETE FROM usuarios WHERE username = :username")
+    public void delete(String username);
+
     @Insert
     public long insert(UserItem item);
 
