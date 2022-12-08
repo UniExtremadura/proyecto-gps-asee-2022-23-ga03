@@ -92,7 +92,7 @@ public class CalendarDayItem {
     }
 
     @Ignore
-    CalendarDayItem(long id, String title, String webid, String status, String date, String time, long userid, String type) {
+    public CalendarDayItem(long id, String title, String webid, String status, String date, String time, long userid, String type) {
         this.id = id;
         this.title = title;
         this.webid = webid;
