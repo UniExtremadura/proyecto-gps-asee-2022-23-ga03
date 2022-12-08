@@ -2,6 +2,7 @@ package es.unex.giiis.asee.proyecto.ui.recetas;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +28,8 @@ import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.databinding.FragmentRecetasBinding;
 import es.unex.giiis.asee.proyecto.exercisesModel.Excercise;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RecetasFragment extends Fragment implements RecipesListAdapter.OnListInteractionListener {
 
