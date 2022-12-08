@@ -38,7 +38,7 @@ public class EjerciciosFragment extends Fragment implements ExcerciseListAdapter
     private RecyclerView.LayoutManager layoutManager;
     private ImageButton favoriteButton;
 
-    public void setDataSource (List<Excercise> data) {
+    public void setDataSource(List<Excercise> data){
         mAdapter.swap(data);
     }
 

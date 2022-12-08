@@ -26,6 +26,7 @@ import java.util.List;
 
 import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.databinding.FragmentRecetasBinding;
+import es.unex.giiis.asee.proyecto.exercisesModel.Excercise;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -39,7 +40,7 @@ public class RecetasFragment extends Fragment implements RecipesListAdapter.OnLi
     private Toolbar mToolbar;
     private ImageButton favoriteButton;
 
-    public void setDataSource (List<Recipe> data) {
+    public void setDataSource(List<Recipe> data){
         mAdapter.swap(data);
     }
 
