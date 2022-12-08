@@ -25,6 +25,7 @@ import java.util.List;
 
 import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.databinding.FragmentRecetasBinding;
+import es.unex.giiis.asee.proyecto.exercisesModel.Excercise;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
 
 public class RecetasFragment extends Fragment implements RecipesListAdapter.OnListInteractionListener {
