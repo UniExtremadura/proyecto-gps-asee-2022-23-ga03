@@ -21,7 +21,7 @@ import es.unex.giiis.asee.proyecto.MainActivity;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
 
-public class LoginActivity extends AppCompatActivity implements LoginView{
+public class LoginActivity extends AppCompatActivity implements LoginView {
 
     private static final int SIGN_UP_REQUEST = 0;
     private static final String TAG = "Dietas_fragment";
@@ -101,12 +101,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         }
     }
 
-    private void log(String msg){
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private void log(String msg) {
         Log.i(TAG, msg);
     }
 
@@ -125,8 +120,8 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
 
         SharedPreferences.Editor editor = sp.edit();
         editor.putLong("id", user.getId());
-        editor.putString("username",user.getUsername());
-        editor.putString("password",user.getPassword());
+        editor.putString("username", user.getUsername());
+        editor.putString("password", user.getPassword());
         editor.apply();
 
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -137,7 +132,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
     class AsyncLoad extends AsyncTask<Void, Void, List<UserItem>> {
 
         @Override
-        protected List<UserItem> doInBackground(Void... voids){
+        protected List<UserItem> doInBackground(Void... voids) {
             NutrifitDatabase nutrifitDb = NutrifitDatabase.getDatabase(LoginActivity.this);
             List<UserItem> items = nutrifitDb.userItemDao().getAll();
 
@@ -145,7 +140,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         }
 
         @Override
-        protected void onPostExecute(List<UserItem> items){
+        protected void onPostExecute(List<UserItem> items) {
             super.onPostExecute(items);
             users = items;
         }
