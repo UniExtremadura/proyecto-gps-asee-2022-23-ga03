@@ -2,7 +2,6 @@ package es.unex.giiis.asee.proyecto.ui.perfil;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,14 +25,14 @@ import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.databinding.FragmentPerfilBinding;
 import es.unex.giiis.asee.proyecto.login_register.UserItem;
-import es.unex.giiis.asee.proyecto.viewmodels.UserViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.PerfilFragmentViewModel;
 
 public class PerfilFragment extends Fragment {
     private FragmentPerfilBinding binding;
     private Toolbar mToolbar;
     private TextView name, completename, email, age, weight, height;
 
-    private UserViewModel mUserViewModel;
+    private PerfilFragmentViewModel mPerfilFragmentViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -43,7 +42,7 @@ public class PerfilFragment extends Fragment {
 
         AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
 
-        mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.userFactory).get(UserViewModel.class);
+        mPerfilFragmentViewModel = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.perfilFactory).get(PerfilFragmentViewModel.class);
 
         mToolbar = binding.toolbar;
         ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
@@ -62,7 +61,7 @@ public class PerfilFragment extends Fragment {
         fragmentTransaction.add(R.id.fragmentContainerView2, weightGraphFragment);
         fragmentTransaction.commit();
 
-        mUserViewModel.getCurrentUser().observe(getViewLifecycleOwner(), new Observer<UserItem>() {
+        mPerfilFragmentViewModel.getCurrentUser().observe(getViewLifecycleOwner(), new Observer<UserItem>() {
             @Override
             public void onChanged(UserItem item) {
                 name.setText(item.getUsername());

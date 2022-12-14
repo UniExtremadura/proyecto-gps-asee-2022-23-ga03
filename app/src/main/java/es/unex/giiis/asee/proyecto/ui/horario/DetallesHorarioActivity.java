@@ -3,7 +3,6 @@ package es.unex.giiis.asee.proyecto.ui.horario;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,22 +14,13 @@ import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
-
 import es.unex.giiis.asee.proyecto.AppContainer;
-import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
 import es.unex.giiis.asee.proyecto.ui.recetas.DetallesRecetaActivity;
-import es.unex.giiis.asee.proyecto.repository.network.OnSingleRecipeLoaderListener;
-import es.unex.giiis.asee.proyecto.repository.network.SingleRecipeNetworkLoaderRunnable;
-import es.unex.giiis.asee.proyecto.viewmodels.EventViewModel;
-import es.unex.giiis.asee.proyecto.viewmodels.RecipeListViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.DetallesHorarioActivityViewModel;
 
 public class DetallesHorarioActivity extends AppCompatActivity implements DetallesHorarioAdapter.OnDeleteClickListener, DetallesHorarioAdapter.OnModifyClickListener {
-
-    private static final String TAG = "Detalles_Horario_Activity";
 
     private String date;
     private TextView dateView;
@@ -39,8 +29,7 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
     private RecyclerView.LayoutManager mLayoutManager;
     private DetallesHorarioAdapter mAdapter;
 
-    private EventViewModel mEventViewModel;
-    private RecipeListViewModel mRecipeListViewModel;
+    private DetallesHorarioActivityViewModel mDetallesHorarioActivityViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +38,7 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
 
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
-        mEventViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.eventsFactory).get(EventViewModel.class);
-        mRecipeListViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.recipeFactory).get(RecipeListViewModel.class);
+        mDetallesHorarioActivityViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.detallesHorarioFactory).get(DetallesHorarioActivityViewModel.class);
 
         date = getIntent().getStringExtra("Date");
 
@@ -63,21 +51,18 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
         mLayoutManager = new LinearLayoutManager(DetallesHorarioActivity.this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new DetallesHorarioAdapter(this, this, new DetallesHorarioAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(CalendarDayItem item) {
-                if (item.getType().equals("Recipe")) {
-                    mRecipeListViewModel.fetchOneRecipe(item.getWebid());
-                    Intent intent = new Intent(DetallesHorarioActivity.this, DetallesRecetaActivity.class);
-                    intent.putExtra("webid", item.getWebid());
-                    startActivity(intent);
-                }
+        mAdapter = new DetallesHorarioAdapter(this, this, item -> {
+            if (item.getType().equals("Recipe")) {
+                mDetallesHorarioActivityViewModel.fetchOneRecipe(item.getWebid());
+                Intent intent = new Intent(DetallesHorarioActivity.this, DetallesRecetaActivity.class);
+                intent.putExtra("webid", item.getWebid());
+                startActivity(intent);
             }
         });
 
-        mEventViewModel.getSelectedDateEvents().observe(this, calendarDayItems -> mAdapter.load(calendarDayItems));
+        mDetallesHorarioActivityViewModel.getSelectedDateEvents().observe(this, calendarDayItems -> mAdapter.load(calendarDayItems));
 
-        mEventViewModel.getSelectedDate().observe(this, s -> dateView.setText(s));
+        mDetallesHorarioActivityViewModel.getSelectedDate().observe(this, s -> dateView.setText(s));
 
         mRecyclerView.setAdapter(mAdapter);
     }
@@ -85,7 +70,7 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
     @Override
     protected void onResume() {
         super.onResume();
-        mEventViewModel.setSelectedDate(date);
+        mDetallesHorarioActivityViewModel.setSelectedDate(date);
     }
 
     @Override
@@ -107,7 +92,7 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
 
         final Button submitButton = dialog.findViewById(R.id.yesButton);
         submitButton.setOnClickListener(v -> {
-            mEventViewModel.delete(item);
+            mDetallesHorarioActivityViewModel.delete(item);
             dialog.dismiss();
         });
 
@@ -121,14 +106,5 @@ public class DetallesHorarioActivity extends AppCompatActivity implements Detall
                 item.getStatus(), item.getDate(), item.getTime(), item.getUserid(), item.getType());
         intent.putExtra("Mode", "Update");
         startActivity(intent);
-    }
-
-    private void log(String msg) {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Log.i(TAG, msg);
     }
 }

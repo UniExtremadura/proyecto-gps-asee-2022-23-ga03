@@ -10,11 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -27,9 +23,7 @@ import java.util.stream.Stream;
 import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
-import es.unex.giiis.asee.proyecto.viewmodels.DietRecipesViewModel;
-import es.unex.giiis.asee.proyecto.viewmodels.DietViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.AddRecipeToDietaActivityViewModel;
 
 public class AddRecipeToDietaActivity extends AppCompatActivity {
 
@@ -42,8 +36,7 @@ public class AddRecipeToDietaActivity extends AppCompatActivity {
     private final List<String> periodList = new ArrayList<>(Stream.of(RecipePlantillaItem.Period.values()).map(Enum::name).collect(Collectors.toList()));
     private RecipePlantillaItem item;
 
-    private DietViewModel mDietViewModel;
-    private DietRecipesViewModel mDietRecipesViewModel;
+    private AddRecipeToDietaActivityViewModel mAddRecipeToDietaActivityViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +45,7 @@ public class AddRecipeToDietaActivity extends AppCompatActivity {
 
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
-        mDietViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.dietFactory).get(DietViewModel.class);
-        mDietRecipesViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.recipesDietFactory).get(DietRecipesViewModel.class);
+        mAddRecipeToDietaActivityViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.recipesDietFactory).get(AddRecipeToDietaActivityViewModel.class);
 
         item = new RecipePlantillaItem(getIntent());
 
@@ -64,10 +56,16 @@ public class AddRecipeToDietaActivity extends AppCompatActivity {
         mDietSpinner = findViewById(R.id.diet_spinner);
         mPeriodSpinner  = findViewById(R.id.period_spinner);
 
-        mDietViewModel.getUserDiets().observe(this, new Observer<List<PlantillaItem>>() {
+        mAddRecipeToDietaActivityViewModel.getUserDiets().observe(this, new Observer<List<PlantillaItem>>() {
             @Override
             public void onChanged(List<PlantillaItem> plantillaItems) {
-                loadDietSpinner(plantillaItems);
+                if (plantillaItems.size()==0) {
+                    Intent data = new Intent();
+                    setResult(RESULT_CANCELED, data);
+                    finish();
+                } else {
+                    loadDietSpinner(plantillaItems);
+                }
             }
         });
 
@@ -94,7 +92,7 @@ public class AddRecipeToDietaActivity extends AppCompatActivity {
             item.setPeriod(getPeriod());
             item.setPlantillaid(getPlantillaid());
 
-            mDietRecipesViewModel.insert(item);
+            mAddRecipeToDietaActivityViewModel.insert(item);
             Intent data = new Intent();
             setResult(RESULT_OK, data);
             finish();

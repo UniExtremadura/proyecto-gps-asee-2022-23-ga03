@@ -1,20 +1,18 @@
 package es.unex.giiis.asee.proyecto.login_register;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
 import java.util.Date;
 import java.util.List;
@@ -23,9 +21,7 @@ import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
-import es.unex.giiis.asee.proyecto.viewmodels.UserViewModel;
-import es.unex.giiis.asee.proyecto.viewmodels.WeightViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.RegisterActivityViewModel;
 
 public class RegisterActivity extends AppCompatActivity implements RegisterView {
     private RegisterValidator mRegisterValidator;
@@ -35,8 +31,7 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
     private SharedPreferences sp;
     private List<UserItem> users;
 
-    private UserViewModel mUserViewModel;
-    private WeightViewModel mWeightRecordItem;
+    private RegisterActivityViewModel mRegisterActivityViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +40,9 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
 
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
-        mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.userFactory).get(UserViewModel.class);
-        mWeightRecordItem = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.weightFactory).get(WeightViewModel.class);
+        mRegisterActivityViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.registerFactory).get(RegisterActivityViewModel.class);
 
-        mUserViewModel.getAllUsers().observe(this, new Observer<List<UserItem>>() {
+        mRegisterActivityViewModel.getAllUsers().observe(this, new Observer<List<UserItem>>() {
             @Override
             public void onChanged(List<UserItem> userItems) {
                 users = userItems;
@@ -110,17 +104,17 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                long id = mUserViewModel.insert(user);
+                long id = mRegisterActivityViewModel.insertUser(user);
                 AppExecutors.getInstance().mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
-                        mUserViewModel.setSessionId(id);
+                        mRegisterActivityViewModel.setSessionId(id);
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putLong("id", id);
                         editor.apply();
                     }
                 });
-                mWeightRecordItem.insert(new WeightRecordItem(id, formatWeight(String.valueOf(weight.getText())), new Date()));
+                mRegisterActivityViewModel.insertWeightRecord(new WeightRecordItem(id, formatWeight(String.valueOf(weight.getText())), new Date()));
                 finishRegister();
             }
         });

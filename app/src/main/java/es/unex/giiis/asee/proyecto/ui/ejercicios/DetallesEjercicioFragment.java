@@ -31,7 +31,7 @@ import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.exercisesModel.Excercise;
 import es.unex.giiis.asee.proyecto.ui.horario.AddEventToHorarioActivity;
 import es.unex.giiis.asee.proyecto.ui.horario.CalendarDayItem;
-import es.unex.giiis.asee.proyecto.viewmodels.FavoriteExcerciseViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.DetallesExerciseFragmentViewModel;
 
 
 public class DetallesEjercicioFragment extends Fragment {
@@ -44,7 +44,7 @@ public class DetallesEjercicioFragment extends Fragment {
     private boolean favoriteState = false;
     private TextView nameView, typeView, muscleView, equipmentView, difficultyView, instructionsView;
 
-    private FavoriteExcerciseViewModel mFavoriteExcerciseViewModel;
+    private DetallesExerciseFragmentViewModel mDetallesExerciseFragmentViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,7 +54,7 @@ public class DetallesEjercicioFragment extends Fragment {
 
         AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
 
-        mFavoriteExcerciseViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.favoriteExcerciseFactory).get(FavoriteExcerciseViewModel.class);
+        mDetallesExerciseFragmentViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.detallesExerciseFactory).get(DetallesExerciseFragmentViewModel.class);
 
         bindViews(v);
 
@@ -67,7 +67,7 @@ public class DetallesEjercicioFragment extends Fragment {
 
         sp = getActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
 
-        mFavoriteExcerciseViewModel.getUserFavorites().observe(getViewLifecycleOwner(), new Observer<List<FavoriteExcerciseItem>>() {
+        mDetallesExerciseFragmentViewModel.getUserFavorites().observe(getViewLifecycleOwner(), new Observer<List<FavoriteExcerciseItem>>() {
             @Override
             public void onChanged(List<FavoriteExcerciseItem> favoriteExcerciseItems) {
                 if(favoriteExcerciseItems != null) {
@@ -122,7 +122,7 @@ public class DetallesEjercicioFragment extends Fragment {
     }
 
     private void eliminarFavorito(){
-        mFavoriteExcerciseViewModel.delete(excercise.getName());
+        mDetallesExerciseFragmentViewModel.delete(excercise.getName());
         Toast toast = Toast.makeText(getContext(), "Excercise deleted from favorites", Toast.LENGTH_LONG);
         toast.show();
     }
@@ -132,7 +132,7 @@ public class DetallesEjercicioFragment extends Fragment {
         FavoriteExcerciseItem item = new FavoriteExcerciseItem(excercise.getName(),
                 excercise.getType(), excercise.getMuscle(),
                 excercise.getEquipment(), excercise.getDifficulty(), excercise.getInstructions(), userid);
-        mFavoriteExcerciseViewModel.insert(item);
+        mDetallesExerciseFragmentViewModel.insert(item);
         Toast toast = Toast.makeText(getContext(), "Excercise added to favorites", Toast.LENGTH_LONG);
         toast.show();
     }

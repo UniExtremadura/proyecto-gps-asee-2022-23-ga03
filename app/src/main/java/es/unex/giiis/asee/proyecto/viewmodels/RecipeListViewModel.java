@@ -25,12 +25,4 @@ public class RecipeListViewModel extends ViewModel {
     public void fetchRecipes() {
         mRepository.doFetchRecipes();
     }
-
-    public LiveData<Recipe> getFetchedRecipe() {
-        return mRepository.getCurrentFetchedRecipe();
-    }
-
-    public void fetchOneRecipe(String webid) {
-        mRepository.doFetchSingleRecipe(webid);
-    }
 }

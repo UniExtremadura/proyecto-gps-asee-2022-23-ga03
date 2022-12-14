@@ -10,12 +10,12 @@ import java.util.List;
 import es.unex.giiis.asee.proyecto.repository.NutrifitRepository;
 import es.unex.giiis.asee.proyecto.ui.horario.RecipePlantillaItem;
 
-public class DietRecipesViewModel extends ViewModel {
+public class DetallesPlantillaFragmentViewModel extends ViewModel {
     private final NutrifitRepository mRepository;
 
     private MutableLiveData<Long> currentPlantillaId;
 
-    public DietRecipesViewModel(NutrifitRepository repository) {
+    public DetallesPlantillaFragmentViewModel(NutrifitRepository repository) {
         mRepository = repository;
         currentPlantillaId = new MutableLiveData<>();
     }
@@ -32,11 +32,11 @@ public class DietRecipesViewModel extends ViewModel {
         return Transformations.switchMap(getCurrentPlantillaId(), mRepository::getAllRecipesFromPlantilla);
     }
 
-    public void insert(RecipePlantillaItem item) {
-        mRepository.insertRecipeDiet(item);
-    }
-
     public void delete(RecipePlantillaItem item) {
         mRepository.deleteRecipeDiet(item);
+    }
+
+    public void fetchOneRecipe(String webid) {
+        mRepository.doFetchSingleRecipe(webid);
     }
 }

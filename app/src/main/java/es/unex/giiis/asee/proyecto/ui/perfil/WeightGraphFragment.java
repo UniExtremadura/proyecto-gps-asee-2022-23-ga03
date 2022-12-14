@@ -21,14 +21,14 @@ import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.login_register.WeightRecordItem;
-import es.unex.giiis.asee.proyecto.viewmodels.WeightViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.WeightGraphFragmentViewModel;
 
 public class WeightGraphFragment extends Fragment {
 
     private GraphView graphView;
     private LineGraphSeries<DataPoint> series;
 
-    private WeightViewModel mWeightRecordItem;
+    private WeightGraphFragmentViewModel mWeightRecordItem;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,7 +39,7 @@ public class WeightGraphFragment extends Fragment {
 
         AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
 
-        mWeightRecordItem = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.weightFactory).get(WeightViewModel.class);
+        mWeightRecordItem = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.weightFactory).get(WeightGraphFragmentViewModel.class);
 
         mWeightRecordItem.getAllRecords().observe(getViewLifecycleOwner(), new Observer<List<WeightRecordItem>>() {
             @Override

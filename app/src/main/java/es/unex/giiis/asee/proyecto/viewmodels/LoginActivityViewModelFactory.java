@@ -5,16 +5,16 @@ import androidx.lifecycle.ViewModelProvider;
 
 import es.unex.giiis.asee.proyecto.repository.NutrifitRepository;
 
-public class DietViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class LoginActivityViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final NutrifitRepository mRepository;
 
-    public DietViewModelFactory(NutrifitRepository repository) {
+    public LoginActivityViewModelFactory(NutrifitRepository repository) {
         this.mRepository = repository;
     }
 
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
         //noinspection unchecked
-        return (T) new DietViewModel(mRepository);
+        return (T) new LoginActivityViewModel(mRepository);
     }
 }

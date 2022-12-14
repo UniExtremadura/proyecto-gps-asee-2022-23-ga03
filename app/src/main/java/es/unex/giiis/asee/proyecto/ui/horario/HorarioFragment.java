@@ -25,7 +25,7 @@ import java.util.Locale;
 import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.viewmodels.EventViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.HorarioFragmentViewModel;
 
 public class HorarioFragment extends Fragment {
 
@@ -35,7 +35,7 @@ public class HorarioFragment extends Fragment {
     private CalendarView mCalendarView;
     private List<EventDay> mEventDays = new ArrayList<>();
 
-    private EventViewModel mEventViewModel;
+    private HorarioFragmentViewModel mHorarioFragmentViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,7 +45,7 @@ public class HorarioFragment extends Fragment {
 
         AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
 
-        mEventViewModel = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.eventsFactory).get(EventViewModel.class);
+        mHorarioFragmentViewModel = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.horarioFragmentFactory).get(HorarioFragmentViewModel.class);
 
         mCalendarView = v.findViewById(R.id.calendarView);
 
@@ -54,7 +54,7 @@ public class HorarioFragment extends Fragment {
         mEventDays = new ArrayList<>();
         mCalendarView.setEvents(mEventDays);
 
-        mEventViewModel.getUserEvents().observe(getViewLifecycleOwner(), new Observer<List<CalendarDayItem>>() {
+        mHorarioFragmentViewModel.getUserEvents().observe(getViewLifecycleOwner(), new Observer<List<CalendarDayItem>>() {
             @Override
             public void onChanged(List<CalendarDayItem> calendarDayItems) {
                 loadEventItems(calendarDayItems);

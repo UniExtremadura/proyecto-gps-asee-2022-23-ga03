@@ -40,7 +40,7 @@ import es.unex.giiis.asee.proyecto.ui.horario.AddEventToHorarioActivity;
 import es.unex.giiis.asee.proyecto.ui.horario.AddRecipeToDietaActivity;
 import es.unex.giiis.asee.proyecto.ui.horario.CalendarDayItem;
 import es.unex.giiis.asee.proyecto.ui.horario.RecipePlantillaItem;
-import es.unex.giiis.asee.proyecto.viewmodels.FavoriteRecipeViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.DetallesRecipeFragmentViewModel;
 
 public class DetallesRecetaFragment extends Fragment {
 
@@ -57,7 +57,7 @@ public class DetallesRecetaFragment extends Fragment {
     private static final int ADD_TO_DIET = 0;
     private Recipe recipe;
 
-    private FavoriteRecipeViewModel mFavoriteRecipeViewModel;
+    private DetallesRecipeFragmentViewModel mDetallesRecipeFragmentViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,7 +67,7 @@ public class DetallesRecetaFragment extends Fragment {
 
         AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
 
-        mFavoriteRecipeViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.favoriteRecipeFactory).get(FavoriteRecipeViewModel.class);
+        mDetallesRecipeFragmentViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.detallesRecipeFragmentFactory).get(DetallesRecipeFragmentViewModel.class);
 
         bindViews(v);
 
@@ -86,7 +86,7 @@ public class DetallesRecetaFragment extends Fragment {
 
         sp = getActivity().getSharedPreferences("UserPref", Context.MODE_PRIVATE);
 
-        mFavoriteRecipeViewModel.getUserFavorites().observe(getViewLifecycleOwner(), new Observer<List<FavoriteRecipeItem>>() {
+        mDetallesRecipeFragmentViewModel.getUserFavorites().observe(getViewLifecycleOwner(), new Observer<List<FavoriteRecipeItem>>() {
             @Override
             public void onChanged(List<FavoriteRecipeItem> favoriteRecipeItems) {
                 if(favoriteRecipeItems != null) {
@@ -245,7 +245,7 @@ public class DetallesRecetaFragment extends Fragment {
     }
 
     private void eliminarFavorito(){
-        mFavoriteRecipeViewModel.delete(webid);
+        mDetallesRecipeFragmentViewModel.delete(webid);
         Toast toast = Toast.makeText(getContext(), "Recipe deleted from favorites", Toast.LENGTH_LONG);
         toast.show();
     }
@@ -255,7 +255,7 @@ public class DetallesRecetaFragment extends Fragment {
         FavoriteRecipeItem item = new FavoriteRecipeItem(recipe.getLabel(),
                 recipe.getCalories()/recipe.getYield(),
                 webid, recipe.getImage(),userid);
-        mFavoriteRecipeViewModel.insert(item);
+        mDetallesRecipeFragmentViewModel.insert(item);
         Toast toast = Toast.makeText(getContext(), "Recipe added to favorites", Toast.LENGTH_LONG);
         toast.show();
     }

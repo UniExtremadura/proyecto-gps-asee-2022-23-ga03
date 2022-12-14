@@ -27,7 +27,7 @@ import java.util.List;
 import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.viewmodels.DietViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.DietListViewModel;
 
 
 public class DietasFragment extends Fragment implements PlantillaAdapter.OnDeleteClickListener, PlantillaAdapter.OnModifyClickListener {
@@ -41,7 +41,7 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
     private RecyclerView.LayoutManager mLayoutManager;
     private PlantillaAdapter mAdapter;
 
-    private DietViewModel mDietViewModel;
+    private DietListViewModel mDietListViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,7 +53,7 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
 
         AppContainer appContainer = ((MyApplication) getActivity().getApplication()).appContainer;
 
-        mDietViewModel = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.dietFactory).get(DietViewModel.class);
+        mDietListViewModel = new ViewModelProvider((ViewModelStoreOwner) getActivity(), (ViewModelProvider.Factory) appContainer.dietFactory).get(DietListViewModel.class);
 
         mLayoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -74,7 +74,7 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
 
         mRecyclerView.setAdapter(mAdapter);
 
-        mDietViewModel.getUserDiets().observe(getViewLifecycleOwner(), new Observer<List<PlantillaItem>>() {
+        mDietListViewModel.getUserDiets().observe(getViewLifecycleOwner(), new Observer<List<PlantillaItem>>() {
             @Override
             public void onChanged(List<PlantillaItem> plantillaItems) {
                 mAdapter.load(plantillaItems);
@@ -103,7 +103,7 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
                 PlantillaItem item = new PlantillaItem(data);
 
                 //Se inserta el item recibido en la base de datos
-                mDietViewModel.insert(item);
+                mDietListViewModel.insert(item);
             }
         }
     }
@@ -132,7 +132,7 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
 
         final Button submitButton = dialog.findViewById(R.id.yesButton);
         submitButton.setOnClickListener(v -> {
-            mDietViewModel.delete(item);
+            mDietListViewModel.delete(item);
             dialog.dismiss();
         });
         dialog.show();

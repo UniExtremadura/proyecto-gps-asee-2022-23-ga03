@@ -6,15 +6,26 @@ import es.unex.giiis.asee.proyecto.repository.NutrifitRepository;
 import es.unex.giiis.asee.proyecto.repository.network.ExcercisesNetworkDataSource;
 import es.unex.giiis.asee.proyecto.repository.network.RecipesNetworkDataSource;
 import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
-import es.unex.giiis.asee.proyecto.viewmodels.DietRecipesViewModelFactory;
-import es.unex.giiis.asee.proyecto.viewmodels.DietViewModelFactory;
-import es.unex.giiis.asee.proyecto.viewmodels.EventViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.DetallesExerciseFragmentViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.DetallesHorarioActivityViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.DetallesPlantillaFragmentViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.DetallesRecetaActivityViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.DetallesRecipeFragmentViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.AddRecipeToDietaActivityViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.DietListViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.EditProfileActivityViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.EditWeightActivityViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.AddEventToHorarioActivityViewModelFactory;
 import es.unex.giiis.asee.proyecto.viewmodels.ExcerciseListViewModelFactory;
-import es.unex.giiis.asee.proyecto.viewmodels.FavoriteExcerciseViewModelFactory;
-import es.unex.giiis.asee.proyecto.viewmodels.FavoriteRecipeViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.FavoriteExerciseActivityViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.FavoriteRecipeActivityViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.HorarioFragmentViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.LoginActivityViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.ModifyPlantillaActivityViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.PerfilFragmentViewModelFactory;
 import es.unex.giiis.asee.proyecto.viewmodels.RecipeListViewModelFactory;
-import es.unex.giiis.asee.proyecto.viewmodels.UserViewModelFactory;
-import es.unex.giiis.asee.proyecto.viewmodels.WeightViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.RegisterActivityViewModelFactory;
+import es.unex.giiis.asee.proyecto.viewmodels.WeightGraphFragmentViewModelFactory;
 
 public class AppContainer {
 
@@ -23,15 +34,31 @@ public class AppContainer {
     private ExcercisesNetworkDataSource excercisesNetworkDataSource;
 
     public NutrifitRepository repository;
-    public UserViewModelFactory userFactory;
-    public WeightViewModelFactory weightFactory;
-    public DietViewModelFactory dietFactory;
+
+    public LoginActivityViewModelFactory loginFactory;
+    public RegisterActivityViewModelFactory registerFactory;
+    public PerfilFragmentViewModelFactory perfilFactory;
+    public EditProfileActivityViewModelFactory editPerfilFactory;
+    public EditWeightActivityViewModelFactory editWeightFactory;
+    public WeightGraphFragmentViewModelFactory weightFactory;
+
+    public DetallesRecetaActivityViewModelFactory detallesRecetaActivityFactory;
+    public FavoriteRecipeActivityViewModelFactory favoriteRecipeActivityFactory;
+    public DetallesRecipeFragmentViewModelFactory detallesRecipeFragmentFactory;
     public RecipeListViewModelFactory recipeFactory;
+
+    public FavoriteExerciseActivityViewModelFactory favoriteExerciseActivityFactory;
     public ExcerciseListViewModelFactory excerciseFactory;
-    public DietRecipesViewModelFactory recipesDietFactory;
-    public EventViewModelFactory eventsFactory;
-    public FavoriteExcerciseViewModelFactory favoriteExcerciseFactory;
-    public FavoriteRecipeViewModelFactory favoriteRecipeFactory;
+    public DetallesExerciseFragmentViewModelFactory detallesExerciseFactory;
+
+    public DetallesPlantillaFragmentViewModelFactory detallesPlantillaFactory;
+    public ModifyPlantillaActivityViewModelFactory modifyPlantillaFactory;
+    public AddRecipeToDietaActivityViewModelFactory recipesDietFactory;
+    public DietListViewModelFactory dietFactory;
+
+    public HorarioFragmentViewModelFactory horarioFragmentFactory;
+    public DetallesHorarioActivityViewModelFactory detallesHorarioFactory;
+    public AddEventToHorarioActivityViewModelFactory eventsFactory;
 
     public AppContainer(Context context){
         database = NutrifitDatabase.getDatabase(context);
@@ -42,14 +69,29 @@ public class AppContainer {
                 database.favoriteExcerciseItemDao(), database.favoriteRecipeItemDao(),
                 recipesNetworkDataSource, excercisesNetworkDataSource);
 
-        userFactory = new UserViewModelFactory(repository);
-        weightFactory = new WeightViewModelFactory(repository);
-        dietFactory = new DietViewModelFactory(repository);
+        loginFactory = new LoginActivityViewModelFactory(repository);
+        registerFactory = new RegisterActivityViewModelFactory(repository);
+        perfilFactory = new PerfilFragmentViewModelFactory(repository);
+        editPerfilFactory = new EditProfileActivityViewModelFactory(repository);
+        editWeightFactory = new EditWeightActivityViewModelFactory(repository);
+        weightFactory = new WeightGraphFragmentViewModelFactory(repository);
+
+        detallesRecetaActivityFactory = new DetallesRecetaActivityViewModelFactory(repository);
+        favoriteRecipeActivityFactory = new FavoriteRecipeActivityViewModelFactory(repository);
+        detallesRecipeFragmentFactory = new DetallesRecipeFragmentViewModelFactory(repository);
         recipeFactory = new RecipeListViewModelFactory(repository);
+
+        favoriteExerciseActivityFactory = new FavoriteExerciseActivityViewModelFactory(repository);
+        detallesExerciseFactory = new DetallesExerciseFragmentViewModelFactory(repository);
         excerciseFactory = new ExcerciseListViewModelFactory(repository);
-        recipesDietFactory = new DietRecipesViewModelFactory(repository);
-        eventsFactory = new EventViewModelFactory(repository);
-        favoriteExcerciseFactory = new FavoriteExcerciseViewModelFactory(repository);
-        favoriteRecipeFactory = new FavoriteRecipeViewModelFactory(repository);
+
+        detallesPlantillaFactory = new DetallesPlantillaFragmentViewModelFactory(repository);
+        modifyPlantillaFactory = new ModifyPlantillaActivityViewModelFactory(repository);
+        recipesDietFactory = new AddRecipeToDietaActivityViewModelFactory(repository);
+        dietFactory = new DietListViewModelFactory(repository);
+
+        horarioFragmentFactory = new HorarioFragmentViewModelFactory(repository);
+        detallesHorarioFactory = new DetallesHorarioActivityViewModelFactory(repository);
+        eventsFactory = new AddEventToHorarioActivityViewModelFactory(repository);
     }
 }

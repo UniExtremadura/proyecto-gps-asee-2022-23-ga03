@@ -1,37 +1,33 @@
 package es.unex.giiis.asee.proyecto.login_register;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
+
 import java.util.List;
 
 import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.MainActivity;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
-import es.unex.giiis.asee.proyecto.viewmodels.UserViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.LoginActivityViewModel;
 
 public class LoginActivity extends AppCompatActivity implements LoginView{
 
     private static final String TAG = "LOGIN_ACTIVITY";
 
-    private UserViewModel mUserViewModel;
+    private LoginActivityViewModel mLoginActivityViewModel;
 
     private LoginValidator mLoginValidator;
     private EditText username, password;
@@ -47,9 +43,9 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
 
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
-        mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.userFactory).get(UserViewModel.class);
+        mLoginActivityViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.loginFactory).get(LoginActivityViewModel.class);
 
-        mUserViewModel.getAllUsers().observe(this, new Observer<List<UserItem>>() {
+        mLoginActivityViewModel.getAllUsers().observe(this, new Observer<List<UserItem>>() {
             @Override
             public void onChanged(List<UserItem> userItems) {
                 users = userItems;
@@ -62,8 +58,8 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         bindViews();
 
         long id = sp.getLong("id", 0);
-        mUserViewModel.setSessionId(id);
-        mUserViewModel.getCurrentUser().observe(this, new Observer<UserItem>() {
+        mLoginActivityViewModel.setSessionId(id);
+        mLoginActivityViewModel.getCurrentUser().observe(this, new Observer<UserItem>() {
             @Override
             public void onChanged(UserItem userItem) {
                 if (userItem != null) {
@@ -126,7 +122,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView{
         editor.putLong("id", user.getId());
         editor.apply();
 
-        mUserViewModel.setSessionId(user.getId());
+        mLoginActivityViewModel.setSessionId(user.getId());
 
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);

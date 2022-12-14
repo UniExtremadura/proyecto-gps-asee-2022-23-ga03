@@ -5,16 +5,16 @@ import androidx.lifecycle.ViewModelProvider;
 
 import es.unex.giiis.asee.proyecto.repository.NutrifitRepository;
 
-public class EventViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class HorarioFragmentViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final NutrifitRepository mRepository;
 
-    public EventViewModelFactory(NutrifitRepository repository) {
+    public HorarioFragmentViewModelFactory(NutrifitRepository repository) {
         this.mRepository = repository;
     }
 
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
         //noinspection unchecked
-        return (T) new EventViewModel(mRepository);
+        return (T) new HorarioFragmentViewModel(mRepository);
     }
 }

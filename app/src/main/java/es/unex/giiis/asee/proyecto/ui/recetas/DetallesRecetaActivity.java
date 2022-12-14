@@ -15,13 +15,14 @@ import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
 import es.unex.giiis.asee.proyecto.recipesmodel.Recipe;
+import es.unex.giiis.asee.proyecto.viewmodels.DetallesRecetaActivityViewModel;
 import es.unex.giiis.asee.proyecto.viewmodels.RecipeListViewModel;
 
 public class DetallesRecetaActivity extends AppCompatActivity {
 
     private String webid;
 
-    private RecipeListViewModel mRecipeListViewModel;
+    private DetallesRecetaActivityViewModel mDetallesRecetaActivityViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +31,11 @@ public class DetallesRecetaActivity extends AppCompatActivity {
 
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
-        mRecipeListViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.recipeFactory).get(RecipeListViewModel.class);
+        mDetallesRecetaActivityViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.detallesRecetaActivityFactory).get(DetallesRecetaActivityViewModel.class);
 
         webid = getIntent().getStringExtra("webid");
 
-        mRecipeListViewModel.getFetchedRecipe().observe(this, new Observer<Recipe>() {
+        mDetallesRecetaActivityViewModel.getFetchedRecipe().observe(this, new Observer<Recipe>() {
             @Override
             public void onChanged(Recipe recipe) {
                 if (recipe.getUri().substring(recipe.getUri().lastIndexOf("_") + 1).equals(webid)) {

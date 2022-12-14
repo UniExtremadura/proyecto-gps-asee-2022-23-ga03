@@ -5,11 +5,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,8 +21,7 @@ import java.util.stream.Stream;
 import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.ui.horario.PlantillaItem;
-import es.unex.giiis.asee.proyecto.viewmodels.DietViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.ModifyPlantillaActivityViewModel;
 
 public class ModifyPlantillaActivity extends AppCompatActivity {
 
@@ -38,7 +35,7 @@ public class ModifyPlantillaActivity extends AppCompatActivity {
     private final List<String> priorityList = new ArrayList<>(Stream.of(PlantillaItem.Priority.values()).map(Enum::name).collect(Collectors.toList()));
     private PlantillaItem item;
 
-    private DietViewModel mDietViewModel;
+    private ModifyPlantillaActivityViewModel mModifyPlantillaActivityViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +44,7 @@ public class ModifyPlantillaActivity extends AppCompatActivity {
 
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
-        mDietViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.dietFactory).get(DietViewModel.class);
+        mModifyPlantillaActivityViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.modifyPlantillaFactory).get(ModifyPlantillaActivityViewModel.class);
 
 
         mToolbar = findViewById(R.id.toolbar);
@@ -106,7 +103,7 @@ public class ModifyPlantillaActivity extends AppCompatActivity {
 
                 PlantillaItem data = new PlantillaItem(item.getId(), titleString, priority, day, item.getUserid());
 
-                mDietViewModel.update(data);
+                mModifyPlantillaActivityViewModel.update(data);
 
                 finish();
             }

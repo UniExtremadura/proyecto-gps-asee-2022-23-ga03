@@ -8,13 +8,13 @@ import java.util.List;
 import es.unex.giiis.asee.proyecto.login_register.UserItem;
 import es.unex.giiis.asee.proyecto.repository.NutrifitRepository;
 
-public class UserViewModel extends ViewModel {
+public class EditProfileActivityViewModel extends ViewModel {
 
     private final NutrifitRepository mRepository;
     private LiveData<List<UserItem>> mAllUsers;
     private LiveData<UserItem> mCurrentUser;
 
-    public UserViewModel (NutrifitRepository repository) {
+    public EditProfileActivityViewModel (NutrifitRepository repository) {
         mRepository = repository;
         mAllUsers = mRepository.getAllUsers();
         mCurrentUser = mRepository.getUser();
@@ -28,16 +28,7 @@ public class UserViewModel extends ViewModel {
         return mCurrentUser;
     }
 
-    public void setSessionId(long userId) {
-        mRepository.setUserId(userId);
-        mCurrentUser = mRepository.getUser();
-    }
-
-    public long insert(UserItem item) {
-        return mRepository.insertUser(item);
-    }
-
-    public void update(UserItem item) {
+    public void updateUser(UserItem item) {
         mRepository.updateUser(item);
     }
 }

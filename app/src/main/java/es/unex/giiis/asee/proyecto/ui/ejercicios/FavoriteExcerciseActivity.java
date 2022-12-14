@@ -18,7 +18,7 @@ import java.util.List;
 import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.viewmodels.FavoriteExcerciseViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.FavoriteExerciseActivityViewModel;
 
 public class FavoriteExcerciseActivity extends AppCompatActivity implements FavoriteExcerciseListAdapter.OnListInteractionListener, FavoriteExcerciseListAdapter.OnDeleteButtonInteractionListener {
 
@@ -27,7 +27,7 @@ public class FavoriteExcerciseActivity extends AppCompatActivity implements Favo
     private FavoriteExcerciseListAdapter mAdapter;
     private Toolbar mToolbar;
 
-    private FavoriteExcerciseViewModel mFavoriteExcerciseViewModel;
+    private FavoriteExerciseActivityViewModel mFavoriteExerciseActivityViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class FavoriteExcerciseActivity extends AppCompatActivity implements Favo
 
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
-        mFavoriteExcerciseViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.favoriteExcerciseFactory).get(FavoriteExcerciseViewModel.class);
+        mFavoriteExerciseActivityViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.favoriteExerciseActivityFactory).get(FavoriteExerciseActivityViewModel.class);
 
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -48,7 +48,7 @@ public class FavoriteExcerciseActivity extends AppCompatActivity implements Favo
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new FavoriteExcerciseListAdapter(new ArrayList<>(), this, this);
 
-        mFavoriteExcerciseViewModel.getUserFavorites().observe(this, new Observer<List<FavoriteExcerciseItem>>() {
+        mFavoriteExerciseActivityViewModel.getUserFavorites().observe(this, new Observer<List<FavoriteExcerciseItem>>() {
             @Override
             public void onChanged(List<FavoriteExcerciseItem> favoriteExcerciseItems) {
                 mAdapter.swap(favoriteExcerciseItems);
@@ -67,6 +67,6 @@ public class FavoriteExcerciseActivity extends AppCompatActivity implements Favo
 
     @Override
     public void onDeleteInteraction(FavoriteExcerciseItem item) {
-        mFavoriteExcerciseViewModel.delete(item.getTittle());
+        mFavoriteExerciseActivityViewModel.delete(item.getTittle());
     }
 }

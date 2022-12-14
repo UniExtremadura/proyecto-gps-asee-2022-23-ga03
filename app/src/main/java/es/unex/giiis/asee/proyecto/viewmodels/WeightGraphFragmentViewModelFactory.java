@@ -5,16 +5,16 @@ import androidx.lifecycle.ViewModelProvider;
 
 import es.unex.giiis.asee.proyecto.repository.NutrifitRepository;
 
-public class FavoriteRecipeViewModelFactory extends ViewModelProvider.NewInstanceFactory {
+public class WeightGraphFragmentViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final NutrifitRepository mRepository;
 
-    public FavoriteRecipeViewModelFactory(NutrifitRepository repository) {
+    public WeightGraphFragmentViewModelFactory(NutrifitRepository repository) {
         this.mRepository = repository;
     }
 
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
         //noinspection unchecked
-        return (T) new FavoriteRecipeViewModel(mRepository);
+        return (T) new WeightGraphFragmentViewModel(mRepository);
     }
 }

@@ -1,29 +1,26 @@
 package es.unex.giiis.asee.proyecto.ui.horario;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
-import es.unex.giiis.asee.proyecto.R;
-
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class AddPlantillaActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+import es.unex.giiis.asee.proyecto.R;
+
+public class AddPlantillaActivity extends AppCompatActivity {
 
     private static final String TAG = "Add_Plantilla_Activity";
 
@@ -142,15 +139,5 @@ public class AddPlantillaActivity extends AppCompatActivity implements AdapterVi
             e.printStackTrace();
         }
         Log.i(TAG, msg);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        //nothing
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        //nothing
     }
 }

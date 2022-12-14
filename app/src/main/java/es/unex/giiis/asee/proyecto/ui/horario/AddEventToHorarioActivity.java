@@ -27,7 +27,7 @@ import java.util.Date;
 import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.viewmodels.EventViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.AddEventToHorarioActivityViewModel;
 
 public class AddEventToHorarioActivity extends AppCompatActivity {
 
@@ -48,7 +48,7 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
     private CalendarDayItem item;
     private String mode;
 
-    private EventViewModel mEventViewModel;
+    private AddEventToHorarioActivityViewModel mAddEventToHorarioActivityViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
 
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
-        mEventViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.eventsFactory).get(EventViewModel.class);
+        mAddEventToHorarioActivityViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.eventsFactory).get(AddEventToHorarioActivityViewModel.class);
 
 
         item = new CalendarDayItem(getIntent());
@@ -144,9 +144,9 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
                 item.setTime(time);
 
                 if(mode.equals("Insert")) {
-                    mEventViewModel.insert(item);
+                    mAddEventToHorarioActivityViewModel.insert(item);
                 } else {
-                    mEventViewModel.update(item);
+                    mAddEventToHorarioActivityViewModel.update(item);
                 }
                 Intent data = new Intent();
                 setResult(RESULT_OK, data);

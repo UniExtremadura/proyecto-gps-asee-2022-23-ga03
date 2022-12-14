@@ -10,20 +10,14 @@ import java.util.List;
 import es.unex.giiis.asee.proyecto.repository.NutrifitRepository;
 import es.unex.giiis.asee.proyecto.ui.horario.CalendarDayItem;
 
-public class EventViewModel extends ViewModel {
+public class DetallesHorarioActivityViewModel extends ViewModel {
     private final NutrifitRepository mRepository;
 
-    private LiveData<List<CalendarDayItem>> userEvents;
     private MutableLiveData<String> selectedDate;
 
-    public EventViewModel(NutrifitRepository repository) {
+    public DetallesHorarioActivityViewModel(NutrifitRepository repository) {
         mRepository = repository;
-        userEvents = mRepository.getAllUserEvents();
         selectedDate = new MutableLiveData<>();
-    }
-
-    public LiveData<List<CalendarDayItem>> getUserEvents() {
-        return userEvents;
     }
 
     public LiveData<List<CalendarDayItem>> getSelectedDateEvents() {
@@ -38,15 +32,11 @@ public class EventViewModel extends ViewModel {
         selectedDate.setValue(date);
     }
 
-    public void insert(CalendarDayItem item) {
-        mRepository.insertEvent(item);
-    }
-
-    public void update(CalendarDayItem item) {
-        mRepository.updateEvent(item);
-    }
-
     public void delete(CalendarDayItem item){
         mRepository.deleteEvent(item);
+    }
+
+    public void fetchOneRecipe(String webid) {
+        mRepository.doFetchSingleRecipe(webid);
     }
 }

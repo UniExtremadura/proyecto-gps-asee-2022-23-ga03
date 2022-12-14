@@ -1,15 +1,5 @@
 package es.unex.giiis.asee.proyecto.ui.perfil;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,19 +7,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.Date;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
+
 import java.util.List;
 
 import es.unex.giiis.asee.proyecto.AppContainer;
-import es.unex.giiis.asee.proyecto.AppExecutors;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.login_register.RegisterActivity;
-import es.unex.giiis.asee.proyecto.login_register.RegisterValidator;
 import es.unex.giiis.asee.proyecto.login_register.UserItem;
-import es.unex.giiis.asee.proyecto.login_register.WeightRecordItem;
-import es.unex.giiis.asee.proyecto.roomdb.NutrifitDatabase;
-import es.unex.giiis.asee.proyecto.viewmodels.UserViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.EditProfileActivityViewModel;
 
 public class EditProfileActivity extends AppCompatActivity implements EditProfileView{
 
@@ -40,7 +30,7 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     private Toolbar mToolbar;
     private UserItem currentUser;
 
-    private UserViewModel mUserViewModel;
+    private EditProfileActivityViewModel mEditProfileActivityViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,11 +39,11 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
 
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
-        mUserViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.userFactory).get(UserViewModel.class);
+        mEditProfileActivityViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.editPerfilFactory).get(EditProfileActivityViewModel.class);
 
         bindViews();
 
-        mUserViewModel.getCurrentUser().observe(this, new Observer<UserItem>() {
+        mEditProfileActivityViewModel.getCurrentUser().observe(this, new Observer<UserItem>() {
             @Override
             public void onChanged(UserItem item) {
                 username.setText(item.getUsername());
@@ -65,7 +55,7 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
             }
         });
 
-        mUserViewModel.getAllUsers().observe(this, new Observer<List<UserItem>>() {
+        mEditProfileActivityViewModel.getAllUsers().observe(this, new Observer<List<UserItem>>() {
             @Override
             public void onChanged(List<UserItem> userItems) {
                 users = userItems;
@@ -120,7 +110,7 @@ public class EditProfileActivity extends AppCompatActivity implements EditProfil
     @Override
     public void editSuccessful() {
         modifyUser();
-        mUserViewModel.update(currentUser);
+        mEditProfileActivityViewModel.updateUser(currentUser);
         finish();
     }
 

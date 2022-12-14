@@ -1,5 +1,8 @@
 package es.unex.giiis.asee.proyecto.ui.horario;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.Observer;
@@ -7,19 +10,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.viewpager2.widget.ViewPager2;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import es.unex.giiis.asee.proyecto.AppContainer;
 import es.unex.giiis.asee.proyecto.MyApplication;
 import es.unex.giiis.asee.proyecto.R;
-import es.unex.giiis.asee.proyecto.viewmodels.DietRecipesViewModel;
-import es.unex.giiis.asee.proyecto.viewmodels.DietViewModel;
-import es.unex.giiis.asee.proyecto.viewmodels.RecipeListViewModel;
+import es.unex.giiis.asee.proyecto.viewmodels.DietListViewModel;
 
 public class DetallesPlantillaSwipeActivity extends AppCompatActivity {
 
@@ -29,7 +26,7 @@ public class DetallesPlantillaSwipeActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
     private DetallesPlantillaPagerAdapter pAdapter;
 
-    private DietViewModel mDietViewModel;
+    private DietListViewModel mDietListViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +35,7 @@ public class DetallesPlantillaSwipeActivity extends AppCompatActivity {
 
         AppContainer appContainer = ((MyApplication) getApplication()).appContainer;
 
-        mDietViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.dietFactory).get(DietViewModel.class);
+        mDietListViewModel = new ViewModelProvider((ViewModelStoreOwner) this, (ViewModelProvider.Factory) appContainer.dietFactory).get(DietListViewModel.class);
 
         Intent intent = getIntent();
         item = new PlantillaItem(intent);
@@ -50,7 +47,7 @@ public class DetallesPlantillaSwipeActivity extends AppCompatActivity {
 
         pAdapter = new DetallesPlantillaPagerAdapter(data, getSupportFragmentManager(),getLifecycle());
 
-        mDietViewModel.getUserDiets().observe(this, new Observer<List<PlantillaItem>>() {
+        mDietListViewModel.getUserDiets().observe(this, new Observer<List<PlantillaItem>>() {
             @Override
             public void onChanged(List<PlantillaItem> plantillaItems) {
                 data = plantillaItems;

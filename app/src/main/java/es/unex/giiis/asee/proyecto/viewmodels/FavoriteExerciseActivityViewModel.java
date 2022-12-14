@@ -8,12 +8,12 @@ import java.util.List;
 import es.unex.giiis.asee.proyecto.repository.NutrifitRepository;
 import es.unex.giiis.asee.proyecto.ui.ejercicios.FavoriteExcerciseItem;
 
-public class FavoriteExcerciseViewModel extends ViewModel {
+public class FavoriteExerciseActivityViewModel extends ViewModel {
     private final NutrifitRepository mRepository;
 
     private LiveData<List<FavoriteExcerciseItem>> userFavorites;
 
-    public FavoriteExcerciseViewModel(NutrifitRepository repository) {
+    public FavoriteExerciseActivityViewModel(NutrifitRepository repository) {
         mRepository = repository;
         userFavorites = mRepository.getAllUserExcerciseFavorites();
     }
@@ -29,5 +29,4 @@ public class FavoriteExcerciseViewModel extends ViewModel {
     public void delete(String name) {
         mRepository.deleteExcerciseFavorite(name);
     }
-
 }
