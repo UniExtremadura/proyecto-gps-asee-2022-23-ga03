@@ -32,6 +32,11 @@ public class PlantillaItemTest {
 
     @Test
     public void PlantillaItem1Test() {
+        PlantillaItem plantillaItem = new PlantillaItem( "plantilla2", PlantillaItem.Priority.LOW, PlantillaItem.Day.MONDAY, 9);
+        assertEquals("plantilla2", plantillaItem.getTitle());
+        assertEquals(PlantillaItem.Priority.LOW, plantillaItem.getPriority());
+        assertEquals(PlantillaItem.Day.MONDAY, plantillaItem.getDay());
+        assertEquals(9, plantillaItem.getUserid());
 
     }
 
