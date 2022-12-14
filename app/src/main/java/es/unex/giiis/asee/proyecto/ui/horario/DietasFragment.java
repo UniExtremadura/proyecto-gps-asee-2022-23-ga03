@@ -100,11 +100,6 @@ public class DietasFragment extends Fragment implements PlantillaAdapter.OnDelet
     }
 
     private void log(String msg) {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         Log.i(TAG, msg);
     }
 
