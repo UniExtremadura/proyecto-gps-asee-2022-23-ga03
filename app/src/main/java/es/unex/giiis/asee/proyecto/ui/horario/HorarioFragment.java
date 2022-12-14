@@ -83,11 +83,6 @@ public class HorarioFragment extends Fragment {
     }
 
     private void log(String msg) {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         Log.i(TAG, msg);
     }
 
