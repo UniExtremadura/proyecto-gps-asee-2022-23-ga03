@@ -48,6 +48,7 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
 
     private CalendarDayItem item;
     private String mode;
+    private final String insertString = "Insert";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +61,7 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        if(mode.equals("Insert")) {
+        if(mode.equals(insertString)) {
             getSupportActionBar().setTitle("Add recipe to calendar");
         } else {
             getSupportActionBar().setTitle("Modify recipe on calendar");
@@ -71,7 +72,7 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
         dateView =  findViewById(R.id.date);
         timeView =  findViewById(R.id.time);
 
-        if(mode.equals("Insert")) {
+        if(mode.equals(insertString)) {
             setDefaultDateTime();
         } else {
             setValues();
@@ -137,7 +138,7 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
 
                 item.setTime(time);
 
-                if(mode.equals("Insert")) {
+                if(mode.equals(insertString)) {
                     new AsyncInsert().execute(item);
                 } else {
                     Intent data = new Intent();
@@ -150,6 +151,10 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
         });
     }
 
+    private synchronized static void bindButtons() {
+
+    }
+
     private void setValues() {
         if (item.getStatus() == CalendarDayItem.Status.DONE) {
             mStatusRadioGroup.check(mStatusRadioGroup.getChildAt(0).getId());
@@ -157,11 +162,15 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
             mStatusRadioGroup.check(mStatusRadioGroup.getChildAt(1).getId());
         }
 
-        timeString = CalendarDayItem.FORMAT.format(item.getTime());
-        dateString = item.getDate();
+        setStrings(item);
 
         dateView.setText(dateString);
         timeView.setText(timeString);
+    }
+
+    private synchronized static void setStrings(CalendarDayItem item) {
+        timeString = CalendarDayItem.FORMAT.format(item.getTime());
+        dateString = item.getDate();
     }
 
     private void setDefaultDateTime() {
