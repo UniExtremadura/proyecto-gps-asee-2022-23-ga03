@@ -150,6 +150,10 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
         });
     }
 
+    private synchronized static void bindButtons() {
+
+    }
+
     private void setValues() {
         if (item.getStatus() == CalendarDayItem.Status.DONE) {
             mStatusRadioGroup.check(mStatusRadioGroup.getChildAt(0).getId());
@@ -157,11 +161,15 @@ public class AddEventToHorarioActivity extends AppCompatActivity {
             mStatusRadioGroup.check(mStatusRadioGroup.getChildAt(1).getId());
         }
 
-        timeString = CalendarDayItem.FORMAT.format(item.getTime());
-        dateString = item.getDate();
+        setStrings(item);
 
         dateView.setText(dateString);
         timeView.setText(timeString);
+    }
+
+    private synchronized static void setStrings(CalendarDayItem item) {
+        timeString = CalendarDayItem.FORMAT.format(item.getTime());
+        dateString = item.getDate();
     }
 
     private void setDefaultDateTime() {
