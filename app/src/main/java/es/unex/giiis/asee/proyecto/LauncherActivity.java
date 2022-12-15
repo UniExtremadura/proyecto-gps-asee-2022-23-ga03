@@ -9,7 +9,7 @@ import android.os.Handler;
 import es.unex.giiis.asee.proyecto.login_register.LoginActivity;
 
 public class LauncherActivity extends AppCompatActivity {
-    private final int SPLASH_DISPLAY_LENGTH = 3500;
+    private static final int SPLASH_DISPLAY_LENGTH = 3500;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
