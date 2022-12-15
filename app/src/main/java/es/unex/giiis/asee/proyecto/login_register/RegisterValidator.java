@@ -7,7 +7,7 @@ import android.os.Handler;
  */
 public class RegisterValidator {
     private final RegisterView mRegisterView;
-    private final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+    private static final String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
 
     RegisterValidator(RegisterView registerView) {
         mRegisterView = registerView;
