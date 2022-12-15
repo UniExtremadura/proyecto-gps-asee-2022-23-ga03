@@ -32,19 +32,19 @@ public class CalendarDayItem {
     };
 
     @Ignore
-    public final static String ID = "ID";
+    public final static String ID_ATTR = "ID_ATTR";
     @Ignore
-    public final static String TITLE = "title";
+    public final static String TITLE_ATTR = "title";
     @Ignore
-    public final static String STATUS = "status";
+    public final static String STATUS_ATTR = "status";
     @Ignore
     public final static String DATE = "date";
     @Ignore
     public final static String TIME = "time";
     @Ignore
-    public final static String WEBID = "webid";
+    public final static String WEBID_ATTR = "webid";
     @Ignore
-    public final static String USERID = "userid";
+    public final static String USERID_ATTR = "userid";
     @Ignore
     public final static String TYPE = "type";
     @Ignore
@@ -109,10 +109,10 @@ public class CalendarDayItem {
 
     @Ignore
     public CalendarDayItem(Intent intent) {
-        id = intent.getLongExtra(ID,0);
-        title = intent.getStringExtra(TITLE);
-        webid = intent.getStringExtra(WEBID);
-        status = Status.valueOf(intent.getStringExtra(STATUS));
+        id = intent.getLongExtra(ID_ATTR,0);
+        title = intent.getStringExtra(TITLE_ATTR);
+        webid = intent.getStringExtra(WEBID_ATTR);
+        status = Status.valueOf(intent.getStringExtra(STATUS_ATTR));
 
         try {
             time = FORMAT.parse(intent.getStringExtra(TIME));
@@ -120,7 +120,7 @@ public class CalendarDayItem {
             time = new Date();
         }
         this.date = intent.getStringExtra(DATE);;
-        this.userid = intent.getLongExtra(USERID,0);
+        this.userid = intent.getLongExtra(USERID_ATTR,0);
         this.type = intent.getStringExtra(TYPE);
     }
 
@@ -167,13 +167,13 @@ public class CalendarDayItem {
     public static void packageIntent(Intent intent, long id, String title,
                                      String webid, Status status, String date, Date time, long userid, String type) {
 
-        intent.putExtra(ID, id);
-        intent.putExtra(TITLE, title);
-        intent.putExtra(WEBID, webid);
-        intent.putExtra(STATUS, status.toString());
+        intent.putExtra(ID_ATTR, id);
+        intent.putExtra(TITLE_ATTR, title);
+        intent.putExtra(WEBID_ATTR, webid);
+        intent.putExtra(STATUS_ATTR, status.toString());
         intent.putExtra(DATE, date);
         intent.putExtra(TIME, FORMAT.format(time));
-        intent.putExtra(USERID, userid);
+        intent.putExtra(USERID_ATTR, userid);
         intent.putExtra(TYPE, type);
     }
 
@@ -183,7 +183,7 @@ public class CalendarDayItem {
     }
 
     public String toLog() {
-        return "ID: " + id + ITEM_SEP + "Title:" + title + ITEM_SEP + "Webid:" + webid
+        return "ID_ATTR: " + id + ITEM_SEP + "Title:" + title + ITEM_SEP + "Webid:" + webid
                 + ITEM_SEP + "Status:" + status + ITEM_SEP + "Date:" + date + ITEM_SEP + "Time:"
                 + FORMAT.format(time) + ITEM_SEP + "Userid:" + userid + ITEM_SEP + "Type:" + type;
     }

@@ -13,14 +13,11 @@ public class LoginValidator {
     }
 
     public void validateLogin(String username, String password) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(validateUser(username,password)) {
-                    mLoginView.loginSuccessfull(user);
-                } else {
-                    mLoginView.loginFailure();
-                }
+        new Handler().postDelayed(() -> {
+            if(validateUser(username,password)) {
+                mLoginView.loginSuccessfull(user);
+            } else {
+                mLoginView.loginFailure();
             }
         }, 1500);
 

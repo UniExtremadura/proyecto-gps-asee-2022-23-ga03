@@ -17,7 +17,7 @@ public class UserItem {
     @Ignore
     public static final String ITEM_SEP = System.getProperty("line.separator");
     @Ignore
-    public final static String ID = "ID";
+    public final static String ID = "ID_ATTR";
     @Ignore
     public final static String USERNAME = "username";
     @Ignore
@@ -129,7 +129,7 @@ public class UserItem {
     }
 
     public String toLog() {
-        return "ID: " + id + ITEM_SEP + "Username:" + username + ITEM_SEP +
+        return "ID_ATTR: " + id + ITEM_SEP + "Username:" + username + ITEM_SEP +
                 "Completename:" + completename + ITEM_SEP + "Email:" + email + ITEM_SEP +
                 "Age:" + age + ITEM_SEP + "Weight:" + weight + ITEM_SEP +
                 "Height:" + height;

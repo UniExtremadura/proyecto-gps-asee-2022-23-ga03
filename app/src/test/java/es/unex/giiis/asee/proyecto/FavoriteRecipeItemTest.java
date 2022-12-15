@@ -182,7 +182,7 @@ public class FavoriteRecipeItemTest {
 
     @Test
     public void toLogTest() {
-        assertEquals("ID: " + item.getId() + System.getProperty("line.separator") + "Userid:" + item.getUserid() + System.getProperty("line.separator")
+        assertEquals("ID_ATTR: " + item.getId() + System.getProperty("line.separator") + "Userid:" + item.getUserid() + System.getProperty("line.separator")
                 + "Title:" + item.getTitle() + System.getProperty("line.separator") + "Calories:" + item.getCalories() + System.getProperty("line.separator") +
                 "Webid:" + item.getWebid() + System.getProperty("line.separator") + "Imageurl:" + item.getImageurl(), item.toLog());
 

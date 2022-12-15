@@ -49,7 +49,7 @@ public class UserItemTest {
 
     @Test
     public void ConstructorTest3 () {
-        when (intent.getLongExtra ("ID", 0L)).thenReturn (0L);
+        when (intent.getLongExtra ("ID_ATTR", 0L)).thenReturn (0L);
         when (intent.getStringExtra ("username")).thenReturn ("default_username");
         when (intent.getStringExtra ("completename")).thenReturn ("completename");
         when (intent.getStringExtra ("email")).thenReturn ("default_email");
@@ -180,7 +180,7 @@ public class UserItemTest {
 
     @Test
     public void packageIntentTest () {
-        when (intent.getLongExtra ("ID", 0L)).thenReturn (item.getId ());
+        when (intent.getLongExtra ("ID_ATTR", 0L)).thenReturn (item.getId ());
         when (intent.getStringExtra ("username")).thenReturn (item.getUsername ());
         when (intent.getStringExtra ("completename")).thenReturn (item.getCompletename ());
         when (intent.getStringExtra ("email")).thenReturn (item.getEmail ());
@@ -224,7 +224,7 @@ public class UserItemTest {
                 item.toString ()
         );
         assertNotEquals (
-                "ID: " +
+                "ID_ATTR: " +
                         item.getId () +
                         System.getProperty ("line.separator") +
                         "Username:" +
@@ -251,7 +251,7 @@ public class UserItemTest {
     @Test
     public void toLogTest () {
         assertEquals (
-                "ID: " +
+                "ID_ATTR: " +
                         item.getId () +
                         System.getProperty ("line.separator") +
                         "Username:" +

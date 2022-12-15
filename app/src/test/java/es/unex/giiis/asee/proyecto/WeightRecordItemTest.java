@@ -71,7 +71,7 @@ public class WeightRecordItemTest {
     @Test
     public void WeightRecordItemTest4() {
 
-        when(intent. getLongExtra("ID",0)).thenReturn(0L);
+        when(intent. getLongExtra("ID_ATTR",0)).thenReturn(0L);
         when(intent. getLongExtra("userid",0)).thenReturn(1L);
         when(intent.getDoubleExtra("weight",0.0)).thenReturn(64.5D);
         when(intent.getStringExtra("date")).thenReturn("10/10/2010");
@@ -142,7 +142,7 @@ public class WeightRecordItemTest {
 
     @Test
     public void packageIntentTest() {
-        when(intent. getLongExtra("ID",0)).thenReturn(item.getId());
+        when(intent. getLongExtra("ID_ATTR",0)).thenReturn(item.getId());
         when(intent. getLongExtra("userid",0)).thenReturn(item.getUserid());
         when(intent.getDoubleExtra("weight",0.0)).thenReturn(item.getWeight());
         when(intent.getStringExtra("date")).thenReturn(WeightRecordItem.FORMAT.format(item.getDate()));
@@ -175,7 +175,7 @@ public class WeightRecordItemTest {
     }
     @Test
     public void toLogTest() {
-        assertEquals("ID: " + item.getId()+ System.getProperty("line.separator")+ "Userid:" + item.getUserid()+ System.getProperty("line.separator")+ "Weight:" + item.getWeight()+ System.getProperty("line.separator")+ "Date:" + new SimpleDateFormat(
+        assertEquals("ID_ATTR: " + item.getId()+ System.getProperty("line.separator")+ "Userid:" + item.getUserid()+ System.getProperty("line.separator")+ "Weight:" + item.getWeight()+ System.getProperty("line.separator")+ "Date:" + new SimpleDateFormat(
                 "dd-MM-yyyy", Locale.US).format(item.getDate()) ,item.toLog());
 
     }

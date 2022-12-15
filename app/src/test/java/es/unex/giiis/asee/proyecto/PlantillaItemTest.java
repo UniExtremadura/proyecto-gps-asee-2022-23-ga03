@@ -65,7 +65,7 @@ public class PlantillaItemTest {
 
     @Test
     public void PlantillaItem4Test() {
-        when(intent.getLongExtra("ID", 0)).thenReturn(10L);
+        when(intent.getLongExtra("ID_ATTR", 0)).thenReturn(10L);
         when(intent.getStringExtra("title")).thenReturn("plantilla4");
         when(intent.getStringExtra("priority")).thenReturn("HIGH");
         when(intent.getStringExtra("day")).thenReturn("MONDAY");
@@ -151,7 +151,7 @@ public class PlantillaItemTest {
 
     @Test
     public void packageIntentTest() {
-        when(intent.getLongExtra("ID", 0)).thenReturn(item.getId());
+        when(intent.getLongExtra("ID_ATTR", 0)).thenReturn(item.getId());
         when(intent.getStringExtra("title")).thenReturn(item.getTitle());
         when(intent.getStringExtra("priority")).thenReturn(String.valueOf(item.getPriority()));
         when(intent.getStringExtra("day")).thenReturn(String.valueOf(item.getDay()));
@@ -177,7 +177,7 @@ public class PlantillaItemTest {
 
     @Test
     public void toLogTest() {
-        assertEquals("ID: " + item.getId() + System.getProperty("line.separator") + "Userid:" + item.getUserid() + System.getProperty("line.separator")
+        assertEquals("ID_ATTR: " + item.getId() + System.getProperty("line.separator") + "Userid:" + item.getUserid() + System.getProperty("line.separator")
                 + "Title:" + item.getTitle() + System.getProperty("line.separator") + "Priority:" + item.getPriority() + System.getProperty("line.separator") +
                 "Day:" + item.getDay(), item.toLog());
 
