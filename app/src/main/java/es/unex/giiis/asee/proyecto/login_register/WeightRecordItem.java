@@ -25,15 +25,15 @@ public class WeightRecordItem {
     @Ignore
     public static final String ITEM_SEP = System.getProperty("line.separator");
     @Ignore
-    public final static String ID = "ID_ATTR";
+    public static final  String ID = "ID_ATTR";
     @Ignore
-    public final static String USERID = "userid";
+    public static final  String USERID = "userid";
     @Ignore
-    public final static String WEIGHT = "weight";
+    public static final  String WEIGHT = "weight";
     @Ignore
-    public final static String DATE = "date";
+    public static final  String DATE = "date";
     @Ignore
-    public final static SimpleDateFormat FORMAT = new SimpleDateFormat(
+    public static final  SimpleDateFormat FORMAT = new SimpleDateFormat(
             "dd-MM-yyyy", Locale.US);
 
     @PrimaryKey(autoGenerate = true)

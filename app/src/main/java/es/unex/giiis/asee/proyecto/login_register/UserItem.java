@@ -17,21 +17,21 @@ public class UserItem {
     @Ignore
     public static final String ITEM_SEP = System.getProperty("line.separator");
     @Ignore
-    public final static String ID_ATTR = "ID_ATTR";
+    public static final String ID_ATTR = "ID_ATTR";
     @Ignore
-    public final static String USERNAMESTRING = "username";
+    public static final String USERNAMESTRING = "username";
     @Ignore
-    public final static String COMP_NAME = "completename";
+    public static final String COMP_NAME = "completename";
     @Ignore
-    public final static String EMAIL_ADDRESS = "email";
+    public static final String EMAIL_ADDRESS = "email";
     @Ignore
-    public final static String AGE_NUMBER = "age";
+    public static final String AGE_NUMBER = "age";
     @Ignore
-    public final static String PASSWORD_STRING = "password";
+    public static final String PASSWORD_STRING = "password";
     @Ignore
-    public final static String PERSON_WEIGHT = "weight";
+    public static final String PERSON_WEIGHT = "weight";
     @Ignore
-    public final static String PERSON_HEIGHT = "height";
+    public static final String PERSON_HEIGHT = "height";
 
     @PrimaryKey(autoGenerate = true)
     private long id;
