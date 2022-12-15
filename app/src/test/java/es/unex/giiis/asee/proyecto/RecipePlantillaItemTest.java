@@ -219,7 +219,7 @@ public class RecipePlantillaItemTest {
 
     @Test
     public void toLogTest() {
-        assertEquals("ID: " + item.getId() + System.getProperty("line.separator") + "Plantillaid:" + item.getPlantillaid() + System.getProperty("line.separator")
+        assertEquals("ID_ATTR: " + item.getId() + System.getProperty("line.separator") + "Plantillaid:" + item.getPlantillaid() + System.getProperty("line.separator")
                 + "Title:" + item.getTitle() + System.getProperty("line.separator") + "Calories:" + item.getCalories() + System.getProperty("line.separator") +
                 "Webid:" + item.getWebid() + System.getProperty("line.separator") + "Imageurl:" + item.getImageurl(), item.toLog());
 

@@ -100,7 +100,7 @@ public class CalendarDayItemTest {
 
     @Test
     public void ConstructorTest4 () {
-        when (intent.getLongExtra ("ID", 0L)).thenReturn (0L);
+        when (intent.getLongExtra ("ID_ATTR", 0L)).thenReturn (0L);
         when (intent.getStringExtra ("title")).thenReturn ("default_title");
         when (intent.getStringExtra ("status")).thenReturn ("NOTDONE");
         when (intent.getStringExtra ("date")).thenReturn ("01/01/3000");
@@ -232,7 +232,7 @@ public class CalendarDayItemTest {
 
     @Test
     public void packageIntentTest () {
-        when (intent.getLongExtra ("ID", 0L)).thenReturn (item.getId ());
+        when (intent.getLongExtra ("ID_ATTR", 0L)).thenReturn (item.getId ());
         when (intent.getStringExtra ("title")).thenReturn (item.getTitle ());
         when (intent.getStringExtra ("webid")).thenReturn (item.getWebid ());
         when (intent.getStringExtra ("status")).thenReturn (String.valueOf (item.getStatus ()));
@@ -277,7 +277,7 @@ public class CalendarDayItemTest {
                 item.toString ()
         );
         assertNotEquals (
-                "ID: " +
+                "ID_ATTR: " +
                         item.getId () +
                         System.getProperty ("line.separator") +
                         "Title:" +
@@ -307,7 +307,7 @@ public class CalendarDayItemTest {
     @Test
     public void toLogTest () {
         assertEquals (
-                "ID: " +
+                "ID_ATTR: " +
                 item.getId () +
                 System.getProperty ("line.separator") +
                 "Title:" +
