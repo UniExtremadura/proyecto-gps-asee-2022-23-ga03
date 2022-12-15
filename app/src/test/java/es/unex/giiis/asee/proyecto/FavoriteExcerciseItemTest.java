@@ -60,7 +60,7 @@ public class FavoriteExcerciseItemTest {
 
     @Test
     public void FavoriteExcerciseItem3() {
-        when(intent.getLongExtra("ID", 0)).thenReturn(12L);
+        when(intent.getLongExtra("ID_ATTR", 0)).thenReturn(12L);
         when(intent.getStringExtra("title")).thenReturn("prensa");
         when(intent.getStringExtra("type")).thenReturn("resistencia");
         when(intent.getStringExtra("muscle")).thenReturn("pierna");
@@ -69,7 +69,7 @@ public class FavoriteExcerciseItemTest {
         when(intent.getStringExtra("instructions")).thenReturn("hasta que te tiemblen las piernas");
         when(intent.getLongExtra("userid", 0)).thenReturn(4L);
 
-        intent.putExtra("ID",12);
+        intent.putExtra("ID_ATTR",12);
         intent.putExtra("title","prensa");
         intent.putExtra("type","resistencia");
         intent.putExtra("muscle","pierna");

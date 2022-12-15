@@ -36,7 +36,7 @@ public class PlantillaItem implements Serializable {
     }
 
     @Ignore
-    public final static String ID = "ID";
+    public final static String ID = "ID_ATTR";
     @Ignore
     public final static String TITLE = "title";
     @Ignore
@@ -149,7 +149,7 @@ public class PlantillaItem implements Serializable {
     }
 
     public String toLog() {
-        return "ID: " + id + ITEM_SEP + "Userid:" + userid + ITEM_SEP + "Title:" + title + ITEM_SEP + "Priority:" + priority
+        return "ID_ATTR: " + id + ITEM_SEP + "Userid:" + userid + ITEM_SEP + "Title:" + title + ITEM_SEP + "Priority:" + priority
                 + ITEM_SEP + "Day:" + day;
     }
 }

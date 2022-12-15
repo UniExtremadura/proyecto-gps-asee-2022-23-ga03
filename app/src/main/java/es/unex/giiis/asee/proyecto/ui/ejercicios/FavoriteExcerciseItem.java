@@ -22,21 +22,21 @@ public class FavoriteExcerciseItem implements Serializable {
     public static final String ITEM_SEP = System.getProperty("line.separator");
 
     @Ignore
-    public final static String ID = "ID";
+    public final static String ID = "ID_ATTR";
     @Ignore
     public final static String TITTLE = "title";
     @Ignore
     public final static String TYPE = "type";
     @Ignore
-    public final static String MUSCLE = "muscle";
+    public final static String MUSCLE_ATTR = "muscle";
     @Ignore
-    public final static String EQUIPMENT = "equipment";
+    public final static String EQUIPMENT_ATTR = "equipment";
     @Ignore
-    public final static String DIFFICULTY = "difficulty";
+    public final static String DIFFICULTY_ATTR = "difficulty";
     @Ignore
-    public final static String INSTRUCTIONS = "instructions";
+    public final static String INSTRUCTIONS_ATTR = "instructions";
     @Ignore
-    public final static String USERID = "userid";
+    public final static String USERID_ATTR = "userid";
 
     @PrimaryKey(autoGenerate = true)
     private long id;
@@ -76,11 +76,11 @@ public class FavoriteExcerciseItem implements Serializable {
         this.id = intent.getLongExtra(FavoriteExcerciseItem.ID,0);
         this.tittle = intent.getStringExtra(FavoriteExcerciseItem.TITTLE);
         this.type = intent.getStringExtra(FavoriteExcerciseItem.TYPE);
-        this.muscle = intent.getStringExtra(FavoriteExcerciseItem.MUSCLE);
-        this.equipment = intent.getStringExtra(FavoriteExcerciseItem.EQUIPMENT);
-        this.difficulty = intent.getStringExtra(FavoriteExcerciseItem.DIFFICULTY);
-        this.instructions = intent.getStringExtra(FavoriteExcerciseItem.INSTRUCTIONS);
-        this.userid = intent.getLongExtra(FavoriteExcerciseItem.USERID,0);
+        this.muscle = intent.getStringExtra(FavoriteExcerciseItem.MUSCLE_ATTR);
+        this.equipment = intent.getStringExtra(FavoriteExcerciseItem.EQUIPMENT_ATTR);
+        this.difficulty = intent.getStringExtra(FavoriteExcerciseItem.DIFFICULTY_ATTR);
+        this.instructions = intent.getStringExtra(FavoriteExcerciseItem.INSTRUCTIONS_ATTR);
+        this.userid = intent.getLongExtra(FavoriteExcerciseItem.USERID_ATTR,0);
     }
 
     public long getId() { return id; }

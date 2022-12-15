@@ -25,7 +25,7 @@ public class WeightRecordItem {
     @Ignore
     public static final String ITEM_SEP = System.getProperty("line.separator");
     @Ignore
-    public final static String ID = "ID";
+    public final static String ID = "ID_ATTR";
     @Ignore
     public final static String USERID = "userid";
     @Ignore
@@ -117,7 +117,7 @@ public class WeightRecordItem {
     }
 
     public String toLog() {
-        return "ID: " + id + ITEM_SEP + "Userid:" + userid + ITEM_SEP + "Weight:" + weight
+        return "ID_ATTR: " + id + ITEM_SEP + "Userid:" + userid + ITEM_SEP + "Weight:" + weight
                 + ITEM_SEP + "Date:" + FORMAT.format(date);
     }
 }
