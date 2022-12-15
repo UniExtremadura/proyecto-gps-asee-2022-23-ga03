@@ -101,6 +101,8 @@ public class PerfilFragment extends Fragment {
                 intent2.putExtra("Data", user.getWeight());
                 startActivityForResult(intent2, EDIT_WEIGHT_REQUEST);
                 break;
+            default:
+                return false;
         }
         return true;
     }
