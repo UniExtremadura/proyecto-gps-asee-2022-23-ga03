@@ -86,7 +86,6 @@ public class RegisterActivity extends AppCompatActivity implements RegisterView 
 
     @Override
     public void registerSuccessful(UserItem user) {
-        user.setAge(Math.round(user.getAge()));
         SharedPreferences.Editor editor = sp.edit();
         editor.putString("username",user.getUsername());
         editor.putString("password",user.getPassword());
