@@ -17,21 +17,21 @@ public class UserItem {
     @Ignore
     public static final String ITEM_SEP = System.getProperty("line.separator");
     @Ignore
-    public final static String ID = "ID_ATTR";
+    public static final String ID_ATTR = "ID_ATTR";
     @Ignore
-    public final static String USERNAME = "username";
+    public static final String USERNAMESTRING = "username";
     @Ignore
-    public final static String COMPLETENAME = "completename";
+    public static final String COMP_NAME = "completename";
     @Ignore
-    public final static String EMAIL = "email";
+    public static final String EMAIL_ADDRESS = "email";
     @Ignore
-    public final static String AGE = "age";
+    public static final String AGE_NUMBER = "age";
     @Ignore
-    public final static String PASSWORD = "password";
+    public static final String PASSWORD_STRING = "password";
     @Ignore
-    public final static String WEIGHT = "weight";
+    public static final String PERSON_WEIGHT = "weight";
     @Ignore
-    public final static String HEIGHT = "height";
+    public static final String PERSON_HEIGHT = "height";
 
     @PrimaryKey(autoGenerate = true)
     private long id;
@@ -68,14 +68,14 @@ public class UserItem {
 
     @Ignore
     public UserItem(Intent intent) {
-        this.id = intent.getLongExtra(UserItem.ID,0);
-        this.username = intent.getStringExtra(UserItem.USERNAME);
-        this.completename = intent.getStringExtra(UserItem.COMPLETENAME);
-        this.email = intent.getStringExtra(UserItem.EMAIL);
-        this.age = intent.getLongExtra(UserItem.AGE, 0);
-        this.weight = intent.getDoubleExtra(UserItem.WEIGHT,0.0);
-        this.height = intent.getDoubleExtra(UserItem.HEIGHT,0.0);
-        this.password = intent.getStringExtra(UserItem.PASSWORD);
+        this.id = intent.getLongExtra(UserItem.ID_ATTR,0);
+        this.username = intent.getStringExtra(UserItem.USERNAMESTRING);
+        this.completename = intent.getStringExtra(UserItem.COMP_NAME);
+        this.email = intent.getStringExtra(UserItem.EMAIL_ADDRESS);
+        this.age = intent.getLongExtra(UserItem.AGE_NUMBER, 0);
+        this.weight = intent.getDoubleExtra(UserItem.PERSON_WEIGHT,0.0);
+        this.height = intent.getDoubleExtra(UserItem.PERSON_HEIGHT,0.0);
+        this.password = intent.getStringExtra(UserItem.PASSWORD_STRING);
     }
 
     public long getId() { return id; }
@@ -114,14 +114,14 @@ public class UserItem {
     public static void packageIntent(Intent intent, long id, String username, String completename,
                                      String email, long age, Double weight, Double height, String password) {
 
-        intent.putExtra(UserItem.ID, id);
-        intent.putExtra(UserItem.USERNAME, username);
-        intent.putExtra(UserItem.COMPLETENAME, completename);
-        intent.putExtra(UserItem.EMAIL, email);
-        intent.putExtra(UserItem.AGE, age);
-        intent.putExtra(UserItem.WEIGHT, weight);
-        intent.putExtra(UserItem.HEIGHT, height);
-        intent.putExtra(UserItem.PASSWORD, password);
+        intent.putExtra(UserItem.ID_ATTR, id);
+        intent.putExtra(UserItem.USERNAMESTRING, username);
+        intent.putExtra(UserItem.COMP_NAME, completename);
+        intent.putExtra(UserItem.EMAIL_ADDRESS, email);
+        intent.putExtra(UserItem.AGE_NUMBER, age);
+        intent.putExtra(UserItem.PERSON_WEIGHT, weight);
+        intent.putExtra(UserItem.PERSON_HEIGHT, height);
+        intent.putExtra(UserItem.PASSWORD_STRING, password);
     }
 
     public String toString() {
